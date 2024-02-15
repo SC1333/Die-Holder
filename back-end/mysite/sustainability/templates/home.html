@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Sustainability App</title>
+</head>
+<body>
+    <h1>Welcome to the Sustainability App</h1>
+    <p>This is a simple home page for the Sustainability App.</p>
+
+    <!-- Pass URLs as data attributes -->
+    <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
+    <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
+    <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)">Map</button>
+    <button data-url="{% url 'sustainability:rewards' %}" onclick="openUrl(this)">Rewards</button>
+
+    <script>
+        function openUrl(button) {
+            var url = button.getAttribute('data-url');
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

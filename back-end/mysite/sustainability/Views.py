@@ -1,15 +1,32 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-import os
+# creating the webpages
 
-#creating the webpages
+
 def home(request):
-    return render(request,'home.html') #renders the html (THIS DOESNT WORK CURRENTLY)
+    return render(request, 'home.html')
+
+
 def leaderboard(request):
-    return HttpResponse("This is the leaderbard page for the ECM2434 project website")
+    return render(request, 'leaderboard.html')
+
+
+def auth(request):
+    return render(request, 'auth.html')
+
+
 def login(request):
-    return HttpResponse("This is the login page for the ECM2434 project website")
+    return render(request, 'login.html')
+
+
+def register(request):
+    return render(request, 'register.html')
+
+
 def map(request):
-    return HttpResponse("This is the map page for the ECM2434 project website this will display the ownership map for each team")
+    return render(request, 'map.html')
+
+
 def rewards(request):
-    return HttpResponse("This is the rewards page for the ECM2434 project website users will claim their points from sustainable actions here.")
+    return HttpResponse("This is the rewards page for the ECM2434 project website users will claim their points from "
+                        "sustainable actions here.")
