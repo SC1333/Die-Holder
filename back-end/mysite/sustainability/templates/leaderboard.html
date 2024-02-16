@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <style>
+        /* Add your CSS styling here */
+    </style>
+</head>
+<body>
+    <h1>Leaderboard</h1>
+
+    <label for="display-type">Display Type:</label>
+    <select id="display-type">
+        <option value="users">Users</option>
+        <option value="groups">Groups</option>
+    </select>
+
+    <div id="users-leaderboard">
+        <h2>Sorted by Individual Users</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Total Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Add dynamic data for individual users here -->
+                <tr>
+                    <td>User1</td>
+                    <td>100</td>
+                </tr>
+                <tr>
+                    <td>User2</td>
+                    <td>90</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="groups-leaderboard" style="display: none;">
+        <h2>Sorted by Groups</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Group</th>
+                    <th>Total Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Add dynamic data for groups here -->
+                <tr>
+                    <td>Group1</td>
+                    <td>500</td>
+                </tr>
+                <tr>
+                    <td>Group2</td>
+                    <td>450</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('display-type').addEventListener('change', function() {
+            var selectedOption = this.value;
+            if (selectedOption === 'users') {
+                document.getElementById('users-leaderboard').style.display = 'block';
+                document.getElementById('groups-leaderboard').style.display = 'none';
+            } else if (selectedOption === 'groups') {
+                document.getElementById('users-leaderboard').style.display = 'none';
+                document.getElementById('groups-leaderboard').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
