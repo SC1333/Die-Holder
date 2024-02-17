@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 # creating the webpages
 
-
+"""This section renders the html templates for the webpages"""
 def home(request):
     return render(request, 'home.html')
 
@@ -25,6 +25,14 @@ def register(request):
 
 def map(request):
     return render(request, 'map.html')
+
+def redeem_points(request, buildingID, actionID):
+    context = {
+        'buildingID': buildingID,
+        'actionID': actionID,
+    }
+    return render(request, 'redeem_points.html', context)
+
 
 
 def rewards(request):
