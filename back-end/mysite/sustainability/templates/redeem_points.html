@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redeem Points</title>
+</head>
+<body onload="getUserLocation()"> <!-- Call the getUserLocation function when the page loads -->
+    <h1>Welcome to the Redeem Points Page</h1>
+    <p>Here you can redeem your points for exciting rewards!</p>
+
+    <script>
+        // Get the buildingID and actionID from the URL
+        var buildingID = {{ buildingID }};
+        var actionID = {{ actionID }};
+        function getUserLocation() {// Get the user's location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(checkPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function checkPosition(position) {// Check if the user is within the boundaries of the University of Exeter
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            // Check if the user is within the boundaries of the University of Exeter
+            if (latitude >= 50.7371 && latitude <= 50.7427 && longitude >= -3.5341 && longitude <= -3.5189) {
+                // User is within the boundaries
+                alert("You are within the boundaries of the University of Exeter.");
+                redeemPoints(buildingID, actionID);// Call the redeemPoints function
+            } else {
+                // User is outside the boundaries
+                alert("You are outside the boundaries of the University of Exeter therefore you cannot redeem points.");
+                window.location.href = "/sustainability/"; // Redirect to the home page
+            }
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        function redeemPoints(buildingID, actionID) {
+            //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
+        }
+    </script>
+</body>
+</html>
