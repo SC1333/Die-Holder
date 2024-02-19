@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	{% load static %}
+	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
     <meta charset="UTF-8">
     <title>Welcome to the Sustainability App</title>
 </head>
@@ -9,11 +11,12 @@
     <p>This is a simple home page for the Sustainability App.</p>
 
     <!-- Pass URLs as data attributes -->
+    <nav>
     <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
     <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
     <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)">Map</button>
     <button data-url="{% url 'sustainability:rewards' %}" onclick="openUrl(this)">Rewards</button>
-
+    </nav>
     <script>
         function openUrl(button) {
             var url = button.getAttribute('data-url');

@@ -1,0 +1,15 @@
+/*dark blue #264059
+ * light blue #6EA0B1
+ * orange #E5690B
+ * brown #9F5D35 */
+
+nav {
+	display:flex;
+	justify-content:space-evenly;
+	background-color:#248179;
+
+}
+
+nav button{
+	background-color:#FD767E;
+}
