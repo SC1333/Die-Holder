@@ -2,15 +2,16 @@
 <html>
 <head>
     <title>Redeem Points</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body onload="getUserLocation()"> <!-- Call the getUserLocation function when the page loads -->
     <h1>Welcome to the Redeem Points Page</h1>
     <p>Here you can redeem your points for exciting rewards!</p>
-
+    <?php include 'getUserId.php';?>
     <script>
         // Get the buildingID and actionID from the URL
-        var buildingID = {{ buildingID }};
-        var actionID = {{ actionID }};
+        var buildingID = {buildingID};
+        var actionID = {actionID};
         function getUserLocation() {// Get the user's location
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(checkPosition, showError);
@@ -23,9 +24,8 @@
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
             // Check if the user is within the boundaries of the University of Exeter
-            if (latitude >= 50.7371 && latitude <= 50.7427 && longitude >= -3.5341 && longitude <= -3.5189) {
+            if (latitude >= 50.729 && latitude <= 50.744 && longitude >= -3.54 && longitude <= -3.5260) {
                 // User is within the boundaries
-                alert("You are within the boundaries of the University of Exeter.");
                 redeemPoints(buildingID, actionID);// Call the redeemPoints function
             } else {
                 // User is outside the boundaries
@@ -53,6 +53,17 @@
 
         function redeemPoints(buildingID, actionID) {
             //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
+            $.ajax({
+                url: `/get-building-and-action-names/${buildingID}/${actionID}/`,
+                type: 'GET',
+                success: function(response) {
+                    // Handle the response data here
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
         }
     </script>
 </body>
