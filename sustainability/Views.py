@@ -35,6 +35,7 @@ def redeem_points(request, buildingID, actionID):
     }
     return render(request, 'redeem_points.html', context)
 
+
 def get_building_and_action_names(request, buildingID, actionID,userID):
     try:
         building = Stronghold.objects.get(id=buildingID)
@@ -49,6 +50,6 @@ def get_building_and_action_names(request, buildingID, actionID,userID):
     except (Stronghold.DoesNotExist, Action.DoesNotExist):
         return JsonResponse({'error': 'Building,Action or User not found'}, status=404)
 
+
 def rewards(request):
-    return HttpResponse("This is the rewards page for the ECM2434 project website users will claim their points from "
-                        "sustainable actions here.")
+    return render(request, 'rewards.html')
