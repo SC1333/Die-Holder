@@ -1,16 +1,25 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
-from .models import Stronghold, Action,User
+from .models import Stronghold, Action, User, Score
+
 # creating the webpages
 
 """This section renders the html templates for the webpages"""
+
+
 def home(request):
     return render(request, 'home.html')
 
 
 def leaderboard(request):
-    return render(request, 'leaderboard.html')
+    # Get data from the database
+    users = User.objects.all()
+    # Calculate total points for each user
+    user_points = {user: Score.objects.filter(user=user).count() for user in users}
+    # Sort users by total points
+    sorted_users = sorted(user_points.items(), key=lambda x: x[1], reverse=True)
+    return render(request, 'leaderboard.html', {'sorted_users': sorted_users})
 
 
 def auth(request):
@@ -27,6 +36,7 @@ def register(request):
 
 def map(request):
     return render(request, 'map.html')
+
 
 def redeem_points(request, buildingID, actionID):
     context = {

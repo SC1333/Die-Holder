@@ -16,31 +16,32 @@
         <option value="users">Users</option>
         <option value="groups">Groups</option>
     </select>
+    <script>
+        function openUrl(button) {
+            var url = button.getAttribute('data-url');
+            window.location.href = url;
+        }
+    </script>
 
     <div id="users-leaderboard">
-        <h2>Sorted by Individual Users</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Total Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Add dynamic data for individual users here -->
-                <tr>
-                    <td>User1</td>
-                    <td>100</td>
-                </tr>
-                <tr>
-                    <td>User2</td>
-                    <td>90</td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
-    </div>
-
+    <h2>Sorted by Individual Users</h2>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>User</th>
+                <th>Total Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user, points in sorted_users %}
+            <tr>
+                <td>{{ user.full_name }}</td>
+                <td>{{ points }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
     <div id="groups-leaderboard" style="display: none;">
         <h2>Sorted by Groups</h2>
         <table>
