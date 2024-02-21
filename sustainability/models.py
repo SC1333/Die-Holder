@@ -3,9 +3,9 @@ from django.db import models
 
 class Team(models.Model):
     COLORS = {
-        ('FF0000', 'Red'),
-        ('0000FF', 'Blue'),
-        ('00FF00', 'Green')
+        'FF0000': 'Red',
+        '0000FF': 'Blue',
+        '00FF00': 'Green'
     }
     team_name = models.CharField(max_length=100, primary_key=True)
     team_color = models.CharField(max_length=6, choices=COLORS)
@@ -29,6 +29,7 @@ class Action(models.Model):
 
 class User(models.Model):
     email = models.EmailField()
+    username = models.CharField(max_length=86)
     password = models.CharField(max_length=86)
     salt = models.CharField(max_length=24)
     full_name = models.CharField(max_length=100)
