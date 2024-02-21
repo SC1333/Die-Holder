@@ -12,5 +12,5 @@ urlpatterns = [
     path('map/', Views.map, name='map'),
     path('rewards/', Views.rewards, name='rewards'),
     path('redeem-points/<int:buildingID>/<int:actionID>/', Views.redeem_points, name='redeem-points'),
-    path('get-building-and-action-names/<int:buildingID>/<int:actionID>/<int:userID>/', Views.get_building_and_action_names, name='get-building-and-action-names'),#used as a getter for the database
+    path('get-building-and-action-names/<int:buildingID>/<int:actionID>/<int:username>/', Views.get_building_and_action_names, name='get-building-and-action-names'),#used as a getter for the database
 ]
