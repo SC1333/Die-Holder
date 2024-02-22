@@ -1,0 +1,7 @@
+This file details how to get the database runnin on your local machine:
+
+Step 1: create a migrations folder within your sustainability folder
+Step 2: create an __init__.py file within that migrations folder
+Step 3: in command line run: python manage.py makemigrations
+Step 4: in command line run: python manage.py migrate
+Step 5: in command line run: python manage.py loaddata innitDB.json
