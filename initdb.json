@@ -1,53 +1,51 @@
 [
   {
-    "model": "sustainability.team",
-    "pk": 1,
+    "model": "sustainability.Team",
     "fields": {
       "team_name": "Team Red",
       "team_color": "FF0000"
     }
   },
   {
-    "model": "sustainability.team",
-    "pk": 2,
+    "model": "sustainability.Team",
     "fields": {
       "team_name": "Team Green",
       "team_color": "00FF00"
     }
   },
   {
-    "model": "sustainability.team",
-    "pk": 3,
+    "model": "sustainability.Team",
     "fields": {
       "team_name": "Team Blue",
       "team_color": "0000FF"
     }
   },
   {
-    "model": "sustainability.stronghold",
+    "model": "sustainability.Stronghold",
     "pk": 1,
     "fields": {
-      "building_name": "Building 1"
+      "building_name": "Building 1",
+      "controlling_team":null
     }
   },
   {
-    "model": "sustainability.stronghold",
+    "model": "sustainability.Stronghold",
     "pk": 2,
     "fields": {
       "building_name": "Building 2",
-      "controlling_team": "Team Green"
+      "controlling_team":"Team Red"
     }
   },
   {
-    "model": "sustainability.stronghold",
+    "model": "sustainability.Stronghold",
     "pk": 3,
     "fields": {
       "building_name": "Building 3",
-      "controlling_team": "Team Blue"
+      "controlling_team":"Team Blue"
     }
   },
   {
-    "model": "sustainability.user",
+    "model": "sustainability.User",
     "pk": "user1",
     "fields": {
       "email": "user1@test.net",
@@ -61,7 +59,7 @@
     }
   },
   {
-    "model": "sustainability.user",
+    "model": "sustainability.User",
     "pk": "user2",
     "fields": {
       "email": "user2@test.net",
@@ -75,7 +73,7 @@
     }
   },
   {
-    "model": "sustainability.user",
+    "model": "sustainability.User",
     "pk": "user3",
     "fields": {
       "email": "user3@test.net",
