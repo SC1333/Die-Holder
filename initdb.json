@@ -1,0 +1,91 @@
+[
+  {
+    "model": "sustainability.team",
+    "pk": 1,
+    "fields": {
+      "team_name": "Team Red",
+      "team_color": "FF0000"
+    }
+  },
+  {
+    "model": "sustainability.team",
+    "pk": 2,
+    "fields": {
+      "team_name": "Team Green",
+      "team_color": "00FF00"
+    }
+  },
+  {
+    "model": "sustainability.team",
+    "pk": 3,
+    "fields": {
+      "team_name": "Team Blue",
+      "team_color": "0000FF"
+    }
+  },
+  {
+    "model": "sustainability.stronghold",
+    "pk": 1,
+    "fields": {
+      "building_name": "Building 1"
+    }
+  },
+  {
+    "model": "sustainability.stronghold",
+    "pk": 2,
+    "fields": {
+      "building_name": "Building 2",
+      "controlling_team": "Team Green"
+    }
+  },
+  {
+    "model": "sustainability.stronghold",
+    "pk": 3,
+    "fields": {
+      "building_name": "Building 3",
+      "controlling_team": "Team Blue"
+    }
+  },
+  {
+    "model": "sustainability.user",
+    "pk": "user1",
+    "fields": {
+      "email": "user1@test.net",
+      "password": "password1",
+      "salt": "salt1",
+      "full_name": "User One",
+      "birthdate": "1990-01-01",
+      "role": "player",
+      "team": "Team Red",
+      "pts_multiplier": 1
+    }
+  },
+  {
+    "model": "sustainability.user",
+    "pk": "user2",
+    "fields": {
+      "email": "user2@test.net",
+      "password": "password2",
+      "salt": "salt2",
+      "full_name": "User Two",
+      "birthdate": "1990-01-01",
+      "role": "player",
+      "team": "Team Green",
+      "pts_multiplier": 1
+    }
+  },
+  {
+    "model": "sustainability.user",
+    "pk": "user3",
+    "fields": {
+      "email": "user3@test.net",
+      "password": "password3",
+      "salt": "salt3",
+      "full_name": "User Three",
+      "birthdate": "1990-01-01",
+      "role": "player",
+      "team": "Team Blue",
+      "pts_multiplier": 1.5
+    }
+  }
+]

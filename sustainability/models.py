@@ -28,8 +28,8 @@ class Action(models.Model):
 
 
 class User(models.Model):
-    email = models.EmailField()
-    username = models.CharField(max_length=86)
+    username = models.CharField(max_length=100, primary_key=True)
+    email = models.EmailField(unique=True)
     password = models.CharField(max_length=86)
     salt = models.CharField(max_length=24)
     full_name = models.CharField(max_length=100)
