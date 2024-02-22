@@ -63,5 +63,4 @@ def get_auth_status(request):
     return JsonResponse({'isLoggedIn': is_logged_in})
 
 def rewards(request):
-    return HttpResponse("This is the rewards page for the ECM2434 project website users will claim their points from "
-                        "sustainable actions here.")
+    return render(request, 'rewards.html')
