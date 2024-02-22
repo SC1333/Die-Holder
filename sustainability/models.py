@@ -13,7 +13,7 @@ class Team(models.Model):
 
 class Stronghold(models.Model):
     building_name = models.CharField(max_length=100, unique=True)
-    controlling_team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    controlling_team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Coordinate(models.Model):
