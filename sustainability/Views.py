@@ -32,7 +32,7 @@ def log_in(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        user = CustomUser.objects.filter(email=email).first()
+        user = User.objects.filter(email=email).first()
 
         if user is not None:
 
