@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from .forms import RegisterForm
 from .models import Stronghold, Action, User, Score
+from django.db.models import Sum
+from collections import defaultdict
 
 # creating the webpages
 
@@ -17,11 +19,32 @@ def home(request):
 def leaderboard(request):
     # Get data from the database
     users = User.objects.all()
-    # Calculate total points for each user
-    user_points = {user: Score.objects.filter(user=user).count() for user in users}
+
+    # Calculate total points for each group
+    group_points = defaultdict(int)
+    user_points = {}
+
+    for user in users:
+        # Get all actions done by the user
+        user_actions = Score.objects.filter(user=user)
+        # Aggregate total points for those actions
+        total_points = user_actions.aggregate(total_points=Sum('action_done__points_value'))['total_points'] or 0
+        # Apply user's point multiplier
+        total_points *= user.pts_multiplier
+        # Add total points to the user's group
+        group_points[user.team.team_name] += total_points
+        # Store individual user points
+        user_points[user] = total_points
+
+    # Convert defaultdict to regular dict
+    group_points = dict(group_points)
+
     # Sort users by total points
     sorted_users = sorted(user_points.items(), key=lambda x: x[1], reverse=True)
-    return render(request, 'leaderboard.html', {'sorted_users': sorted_users})
+    # Sort groups by total points
+    sorted_groups = sorted(group_points.items(), key=lambda x: x[1], reverse=True)
+
+    return render(request, 'leaderboard.html', {'sorted_users': sorted_users, 'sorted_groups': sorted_groups})
 
 
 def auth(request):
