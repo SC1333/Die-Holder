@@ -4,14 +4,12 @@
     <title>Redeem Points</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
-<body onload="getUserLocation()"> <!-- Call the getUserLocation function when the page loads -->
+<body onload="getUserLocation()"> <!-- Call the getUserLocation function when the page loads for finished product getUserLocation should be here -->
     <h1>Welcome to the Redeem Points Page</h1>
     <p>Here you can redeem your points for exciting rewards!</p>
     
     <script>
         // Get the buildingID and actionID from the URL
-        var buildingID = {buildingID};
-        var actionID = {actionID};
         function getUserLocation() {// Get the user's location
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(checkPosition, showError);
@@ -26,12 +24,15 @@
             // Check if the user is within the boundaries of the University of Exeter
             if (latitude >= 50.729 && latitude <= 50.744 && longitude >= -3.54 && longitude <= -3.5260) {
                 // User is within the boundaries
+                
                 $.ajax({
                     url: '/get-auth-status/',  // URL to a Django view that checks authentication status
                     type: 'GET',
                     success: function(response) {
                     // Handle the response data here
                         if (response.isLoggedIn) {
+                            var buildingID = {buildingID};
+                            var actionID = {actionID};
                              // User is logged in
                             redeemPoints(buildingID, actionID);
                         }else {
@@ -44,6 +45,7 @@
                         console.error(xhr.responseText);
                     }
                 });
+                
             } else {
                 // User is outside the boundaries
                 alert("You are outside the boundaries of the University of Exeter therefore you cannot redeem points.");
@@ -81,6 +83,28 @@
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
+                }
+            });
+
+            var dateTimeEarned = new Date().toISOString();
+
+            // AJAX request to write to the score table
+            $.ajax({
+                url: '/write-to-score-table/',
+                type: 'POST',
+                data: {
+                    userID: userID,
+                    buildingID: buildingID,
+                    actionID: actionID,
+                    dateTimeEarned: dateTimeEarned
+                },
+                success: function(response) {
+                    // Handle success response
+                    console.log('Score written successfully:', response);
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error('Error writing to score table:', error);
                 }
             });
         }
