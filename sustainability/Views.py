@@ -45,7 +45,7 @@ def redeem_points(request, buildingID, actionID):
     }
     return render(request, 'redeem_points.html', context)
 
-def get_building_and_action_names(request, buildingID, actionID,Username):
+def get_building_and_action_names(request, buildingID, actionID):
     try:
         building = Stronghold.objects.get(id=buildingID)
         action = Action.objects.get(id=actionID)
@@ -61,6 +61,22 @@ def get_building_and_action_names(request, buildingID, actionID,Username):
 def get_auth_status(request):
     is_logged_in = request.user.is_authenticated
     return JsonResponse({'isLoggedIn': is_logged_in})
+
+def write_to_score_table(request):
+    if request.method == 'POST':
+        userID = request.POST.get('userID')
+        buildingID = request.POST.get('buildingID')
+        actionID = request.POST.get('actionID')
+        dateTimeEarned = request.POST.get('dateTimeEarned')
+        
+        # Create a new Score object and save it to the database
+        score = Score(user=userID, action_site=buildingID, action_done=actionID, datetime_earned=dateTimeEarned)
+        score.save()
+        
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
 
 def rewards(request):
     return render(request, 'rewards.html')

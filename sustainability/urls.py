@@ -14,4 +14,5 @@ urlpatterns = [
     path('redeem-points/<int:buildingID>/<int:actionID>/', Views.redeem_points, name='redeem-points'),
     path('get-building-and-action-names/<int:buildingID>/<int:actionID>/', Views.get_building_and_action_names, name='get-building-and-action-names'),#used as a getter for the database
     path('get-auth-status/', Views.get_auth_status, name='get-auth-status'),
+    path('write-to-score-table/', Views.write_to_score_table, name='write-to-score-table'),
 ]
