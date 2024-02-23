@@ -25,7 +25,7 @@
     "pk": 1,
     "fields": {
       "building_name": "Building 1",
-      "controlling_team":null
+      "controlling_team": null
     }
   },
   {
@@ -33,7 +33,7 @@
     "pk": 2,
     "fields": {
       "building_name": "Building 2",
-      "controlling_team":"Team Red"
+      "controlling_team": "Team Red"
     }
   },
   {
@@ -41,7 +41,23 @@
     "pk": 3,
     "fields": {
       "building_name": "Building 3",
-      "controlling_team":"Team Blue"
+      "controlling_team": "Team Blue"
+    }
+  },
+  {
+    "model": "sustainability.Action",
+    "pk": 1,
+    "fields": {
+      "action_name": "Action 1",
+      "points_value": 10
+    }
+  },
+  {
+    "model": "sustainability.Action",
+    "pk": 2,
+    "fields": {
+      "action_name": "Action 2",
+      "points_value": 5
     }
   },
   {
@@ -84,6 +100,33 @@
       "role": "player",
       "team": "Team Blue",
       "pts_multiplier": 1.5
+    }
+  },
+  {
+    "model": "sustainability.Score",
+    "fields": {
+      "user": "user1",
+      "action_site": 2,
+      "action_done": 1,
+      "datetime_earned": "2023-12-31T08:00:00Z"
+    }
+  },
+  {
+    "model": "sustainability.Score",
+    "fields": {
+      "user": "user2",
+      "action_site": 1,
+      "action_done": 2,
+      "datetime_earned": "2023-12-31T08:30:00Z"
+    }
+  },
+  {
+    "model": "sustainability.Score",
+    "fields": {
+      "user": "user3",
+      "action_site": 3,
+      "action_done": 1,
+      "datetime_earned": "2023-12-31T09:00:00Z"
     }
   }
 ]

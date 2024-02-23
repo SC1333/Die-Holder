@@ -38,30 +38,26 @@
     </table>
 </div>
 
-        <div id="groups-leaderboard" style="display: none;">
-            <h2>Sorted by Groups</h2>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Group</th>
-                        <th>Total Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Add dynamic data for groups here -->
-                    <tr>
-                        <td>Group1</td>
-                        <td>500</td>
-                    </tr>
-                    <tr>
-                        <td>Group2</td>
-                        <td>450</td>
-                    </tr>
-                    <!-- Add more rows as needed -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div id="groups-leaderboard" style="display: none;">
+    <h2>Sorted by Groups</h2>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Group</th>
+                <th>Total Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group, total_points in sorted_groups %}
+            <tr>
+                <td>{{ group }}</td>
+                <td>{{ total_points }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
