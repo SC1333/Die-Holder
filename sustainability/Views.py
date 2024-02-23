@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.contrib.auth import login
+from .forms import RegisterForm
 from .models import Stronghold, Action, User, Score
 
 # creating the webpages
@@ -26,12 +28,57 @@ def auth(request):
     return render(request, 'auth.html')
 
 
-def login(request):
-    return render(request, 'login.html')
+def log_in(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = User.objects.filter(email=email).first()
+
+        if user is not None:
+
+            if user.check_password(password):
+                login(request, user)
+
+                # Set a cookie
+                response = redirect('profile')
+                response.set_cookie('user_email', email)
+                
+                return response
+            else:
+                error_message = "Invalid username or password"
+        else:
+            error_message = "Invalid username or password"
+    else:
+        error_message = ""
+
+    return render(request, 'login.html', {'error_message': error_message})
+
+def profile(request):
+    user_email = request.COOKIES.get('user_email')
+
+    return render(request, 'profile.html', {'user_email': user_email})
 
 
 def register(request):
-    return render(request, 'register.html')
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            firstname = form.cleaned_data['firstname']
+            lastname = form.cleaned_data['lastname']
+            dob = form.cleaned_data['dob']
+            email = form.cleaned_data['email']
+            team_colour = form.cleaned_data['team_colour']
+            
+            user = User.objects.create_user(username=username, first_name=firstname, last_name=lastname, dob=dob, email=email, team_color=team_colour, password=form.cleaned_data['password'])
+            user.save()
+
+            return redirect('login')
+    else:
+        form = RegisterForm()
+
+    return render(request, 'register.html', {'form': form})
 
 
 def map(request):
