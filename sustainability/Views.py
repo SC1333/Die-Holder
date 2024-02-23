@@ -26,8 +26,36 @@ def auth(request):
     return render(request, 'auth.html')
 
 
-def login(request):
-    return render(request, 'login.html')
+def log_in(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = CustomUser.objects.filter(email=email).first()
+
+        if user is not None:
+
+            if user.check_password(password):
+                login(request, user)
+
+                # Set a cookie
+                response = redirect('profile')
+                response.set_cookie('user_email', email)
+                
+                return response
+            else:
+                error_message = "Invalid username or password"
+        else:
+            error_message = "Invalid username or password"
+    else:
+        error_message = ""
+
+    return render(request, 'login.html', {'error_message': error_message})
+
+def profile(request):
+    user_email = request.COOKIES.get('user_email')
+
+    return render(request, 'profile.html', {'user_email': user_email})
 
 
 def register(request):
