@@ -24,7 +24,7 @@
     "model": "sustainability.Stronghold",
     "pk": 1,
     "fields": {
-      "building_name": "Building 1",
+      "building_name": "Harrison Building",
       "controlling_team":null
     }
   },
@@ -32,7 +32,7 @@
     "model": "sustainability.Stronghold",
     "pk": 2,
     "fields": {
-      "building_name": "Building 2",
+      "building_name": "Physics Building",
       "controlling_team":"Team Red"
     }
   },
@@ -40,8 +40,143 @@
     "model": "sustainability.Stronghold",
     "pk": 3,
     "fields": {
-      "building_name": "Building 3",
+      "building_name": "Amory Building",
       "controlling_team":"Team Blue"
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 1,
+    "fields": {
+      "latitude": 50.737950732314744,
+      "longitude": -3.533188876573263,
+      "stronghold": 1
+    }
+  },
+  {
+      "model": "sustainability.Coordinate",
+      "pk": 2,
+      "fields": {
+      "latitude": 50.73808215914494,
+      "longitude": -3.532252261776307,
+      "stronghold": 1
+      }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 3,
+    "fields": {
+      "latitude": 50.73739010096517,
+      "longitude": -3.5319999106396835,
+      "stronghold": 1
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 4,
+    "fields": {
+      "latitude": 50.73723926641486,
+      "longitude": -3.532953237156903,
+      "stronghold": 1
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 5,
+    "fields": {
+      "latitude": 50.73759922240865,
+      "longitude": -3.535539067789614,
+      "stronghold": 2
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 6,
+    "fields": {
+      "latitude": 50.73744128291105,
+      "longitude": -3.5353013924025163,
+      "stronghold": 2
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 7,
+    "fields": {
+      "latitude": 50.73667790116252,
+      "longitude": -3.5364006410660522,
+      "stronghold": 2
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 8,
+    "fields": {
+      "latitude": 50.73683208271558,
+      "longitude": -3.536739328491876,
+      "stronghold": 2
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 9,
+    "fields": {
+      "latitude": 50.7370000269909,
+      "longitude": -3.53265700723955,
+      "stronghold": 3
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 10,
+    "fields": {
+      "latitude": 50.73713983319513,
+      "longitude": -3.5316997533907397,
+      "stronghold": 3
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 11,
+    "fields": {
+      "latitude": 50.73677633619627,
+      "longitude": -3.5312653074138325,
+      "stronghold": 3
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 12,
+    "fields": {
+      "latitude": 50.73668313138356,
+      "longitude": -3.53074986303443,
+      "stronghold": 3
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 13,
+    "fields": {
+      "latitude": 50.73644545827048,
+      "longitude": -3.5306688646318207,
+      "stronghold": 3
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 14,
+    "fields": {
+      "latitude": 50.736002730629025,
+      "longitude": -3.5317439343382375,
+      "stronghold": 3
+    }
+  },
+  {
+    "model": "sustainability.Coordinate",
+    "pk": 15,
+    "fields": {
+      "latitude": 50.73618448248294,
+      "longitude": -3.532288832683207,
+      "stronghold": 3
     }
   },
   {
