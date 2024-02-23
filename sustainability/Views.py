@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.contrib.auth import login
 from .models import Stronghold, Action, User, Score
 
 # creating the webpages
