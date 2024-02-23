@@ -3,15 +3,29 @@
 <head>
     <title>Redeem Points</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    {% load static %}
+	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
 </head>
-<body onload="getUserLocation()"> <!-- Call the getUserLocation function when the page loads -->
+<body onload="getUserLocation()"> <!-- Call the getUserLocation function when the page loads for finished product getUserLocation should be here -->
+    <nav>
+        <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
+        <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
+        <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)">Map</button>
+        <button data-url="{% url 'sustainability:rewards' %}" onclick="openUrl(this)">Rewards</button>
+        </nav>
+    
+        <script>
+            function openUrl(button) {
+                var url = button.getAttribute('data-url');
+                window.location.href = url;
+            }
+        </script>
     <h1>Welcome to the Redeem Points Page</h1>
     <p>Here you can redeem your points for exciting rewards!</p>
     
     <script>
         // Get the buildingID and actionID from the URL
-        var buildingID = {buildingID};
-        var actionID = {actionID};
         function getUserLocation() {// Get the user's location
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(checkPosition, showError);
@@ -26,28 +40,15 @@
             // Check if the user is within the boundaries of the University of Exeter
             if (latitude >= 50.729 && latitude <= 50.744 && longitude >= -3.54 && longitude <= -3.5260) {
                 // User is within the boundaries
-                $.ajax({
-                    url: '/get-auth-status/',  // URL to a Django view that checks authentication status
-                    type: 'GET',
-                    success: function(response) {
-                    // Handle the response data here
-                        if (response.isLoggedIn) {
-                             // User is logged in
-                            redeemPoints(buildingID, actionID);
-                        }else {
-                            // User is not logged in
-                            alert("Please log in to redeem points.");
-                            // Redirect the user to the login page or display a message
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
+                var buildingID = {buildingID};
+                var actionID = {actionID};
+                redeemPoints(buildingID, actionID);
+              
+                
             } else {
                 // User is outside the boundaries
                 alert("You are outside the boundaries of the University of Exeter therefore you cannot redeem points.");
-                window.location.href = "/sustainability/"; // Redirect to the home page
+                window.location.href = "/"; // Redirect to the home page
             }
         }
 
@@ -69,21 +70,66 @@
         }
 
         function redeemPoints(buildingID, actionID,userID) {
-            //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
-            $.ajax({
-                url: `/get-building-and-action-names/${buildingID}/${actionID}/`,
-                type: 'GET',
-                success: function(response) {
-                    var buildingName = response.buildingName;
-                    var actionName = response.actionName;
-                    console.log('Building Name:', buildingName);
-                    console.log('Action Name:', actionName);
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
+            //check if user is authenticated
+            var customCookieValue = getCookie('custom_cookie_name');
+            if (customCookieValue) {
+                console.log(customCookieValue);
+                //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
+                $.ajax({
+                    url: `/get-building-and-action-names/${buildingID}/${actionID}/`,
+                    type: 'GET',
+                    success: function(response) {
+                        var buildingName = response.buildingName;
+                        var actionName = response.actionName;
+                        console.log('Building Name:', buildingName);
+                        console.log('Action Name:', actionName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+
+                var dateTimeEarned = new Date().toISOString();
+
+                // AJAX request to write to the score table
+                $.ajax({
+                    url: '/write-to-score-table/',
+                    type: 'POST',
+                    data: {
+                        userID: userID,
+                        buildingID: buildingID,
+                        actionID: actionID,
+                        dateTimeEarned: dateTimeEarned
+                    },
+                    success: function(response) {
+                        // Handle success response
+                        console.log('Score written successfully:', response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response
+                        console.error('Error writing to score table:', error);
+                    }
+                });
+            }else {
+                // Custom cookie does not exist, user is not logged in
+                alert("Please log in to redeem points.");
+                window.location.href = "/login"; // Redirect to the login page
+            }
+            
         }
+
+        function getCookie(cookieName) {
+        var name = cookieName + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var cookieArray = decodedCookie.split(';');
+        for(var i = 0; i < cookieArray.length; i++) {
+            var cookie = cookieArray[i].trim();
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+        return "";
+    }
     </script>
 </body>
 </html>
