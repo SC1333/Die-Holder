@@ -95,8 +95,8 @@ def register(request):
             team_colour = form.cleaned_data['team_colour']
             password = form.cleaned_data['password']
             
-            user = CustomUser.objects.create_user(username=username, first_name=firstname, last_name=lastname, dob=dob, email=email, team_color=team_colour, password=form.cleaned_data['password'])
-            user.save()
+            new_user = User.objects.create_user(username=username, first_name=firstname, last_name=lastname, dob=dob, email=email, team_color=team_colour, password=form.cleaned_data['password'])
+            new_user.save()
 
             # Redirect to login or any other page after successful registration
             return redirect('login')
