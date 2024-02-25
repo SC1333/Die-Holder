@@ -64,9 +64,9 @@ def log_in(request):
             # User is authenticated, log them in
             login(request, user)
 
-            # Set a cookie for the email
+            # Set a cookie for the username
             response = redirect('profile')
-            response.set_cookie('email', user.email)
+            response.set_cookie('username', user.username)
 
             return response
         else:
@@ -75,9 +75,7 @@ def log_in(request):
         error_message = ""
 
     return render(request, 'login.html', {'error_message': error_message})
-
-    return render(request, 'login.html', {'username': username})
-
+    
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
