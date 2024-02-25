@@ -139,7 +139,3 @@ def write_to_score_table(request):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-
-def rewards(request):
-    return render(request, 'rewards.html')
