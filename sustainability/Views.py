@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from .forms import RegisterForm
 from .models import Stronghold, Action, User, Score
 from django.db.models import Sum
@@ -57,14 +58,18 @@ def log_in(request):
         password = request.POST.get('password')
 
         # Query the database for the user
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter(username=username).first()
 
         if user is not None:
             # Check password (assuming passwords are stored using Django's default hashing)
             if user.check_password(password):
                 login(request, user)
-                # Redirect to profile page or any other page
-                return redirect('profile')
+
+                # Set a cookie for the email
+                response = redirect('profile')
+                response.set_cookie('email', email)
+                
+                return response
             else:
                 error_message = "Invalid username or password"
         else:
@@ -75,12 +80,14 @@ def log_in(request):
     return render(request, 'login.html', {'error_message': error_message})
 
 def profile(request):
+    # Retrieve the email cookie if it exists
+    email = request.COOKIES.get('email')
+
     # Redirect to login page if user is not authenticated
     if not request.user.is_authenticated:
         return redirect('login')
 
-    return render(request, 'login.html')
-
+    return render(request, 'login.html', {'username': username})
 
 def register(request):
     if request.method == 'POST':
