@@ -6,9 +6,23 @@
     <title>Leaderboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
 </head>
 <body>
+
+    <nav>
+        <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
+        <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
+        <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)">Map</button>
+        </nav>
+    
+        <script>
+            function openUrl(button) {
+                var url = button.getAttribute('data-url');
+                window.location.href = url;
+            }
+        </script>
+
     <div class="container mt-5">
         <h1>Leaderboard</h1>
 
