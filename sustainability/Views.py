@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
@@ -57,35 +57,24 @@ def log_in(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        # Query the database for the user
-        user = User.objects.filter(username=username).first()
+        # Authenticate the user
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            # Check password (assuming passwords are stored using Django's default hashing)
-            if user.check_password(password):
-                login(request, user)
+            # User is authenticated, log them in
+            login(request, user)
 
-                # Set a cookie for the email
-                response = redirect('profile')
-                response.set_cookie('email', email)
-                
-                return response
-            else:
-                error_message = "Invalid username or password"
+            # Set a cookie for the email
+            response = redirect('profile')
+            response.set_cookie('email', user.email)
+
+            return response
         else:
             error_message = "Invalid username or password"
     else:
         error_message = ""
 
     return render(request, 'login.html', {'error_message': error_message})
-
-def profile(request):
-    # Retrieve the email cookie if it exists
-    email = request.COOKIES.get('email')
-
-    # Redirect to login page if user is not authenticated
-    if not request.user.is_authenticated:
-        return redirect('login')
 
     return render(request, 'login.html', {'username': username})
 
