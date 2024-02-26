@@ -7,7 +7,7 @@
     {% load static %}
 	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
 </head>
-<body onload="redeemPoints(1,1)"> <!-- Call the getUserLocation function when the page loads for finished product getUserLocation should be here -->
+<body onload="getUserLocation()"> <!-- Call the getUserLocation function when the page loads for finished product getUserLocation should be here -->
     <nav>
         <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
         <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
