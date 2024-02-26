@@ -7,7 +7,7 @@
     {% load static %}
 	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
 </head>
-<body onload="getUserLocation()"> <!-- Call the getUserLocation function when the page loads for finished product getUserLocation should be here -->
+<body onload="redeemPoints(1,1)"> <!-- Call the getUserLocation function when the page loads for finished product getUserLocation should be here -->
     <nav>
         <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
         <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
@@ -85,38 +85,38 @@
                         var actionName = response.actionName;
                         console.log('Building Name:', buildingName);
                         console.log('Action Name:', actionName);
+                        var dateTimeEarned = new Date().toISOString();
+                        var csrftoken = getCookie('csrftoken');
+                        // AJAX request to write to the score table
+                        $.ajax({
+                            url: '/write-to-score-table/',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRFToken': csrftoken
+                            },
+                            data: {
+                                userID: userID,
+                                buildingID: buildingID,
+                                actionID: actionID,
+                                dateTimeEarned: dateTimeEarned
+                            },
+                            success: function(response) {
+                                // Handle success response
+                                var redemptionMessage = "Congratulations! You have redeemed the action: " + response.actionName + " at the building: " + response.buildingName + " which earned you " + response.pointsValue + " points.";
+                                $('#redemption-message').text(redemptionMessage);
+                                console.log('Score written successfully:', response);
+                            },
+                            error: function(xhr, status, error){
+                                // Handle error response
+                                console.error('Error writing to score table:', error);
+                            }
+                        });
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);
                     }
                 });
-
-                var dateTimeEarned = new Date().toISOString();
-                var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                // AJAX request to write to the score table
-                $.ajax({
-                    url: '/write-to-score-table/',
-                    type: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrftoken
-                    },
-                    data: {
-                        userID: userID,
-                        buildingID: buildingID,
-                        actionID: actionID,
-                        dateTimeEarned: dateTimeEarned
-                    },
-                    success: function(response) {
-                        // Handle success response
-                        var redemptionMessage = "Congratulations! You have redeemed the action: " + response.actionName + " at the building: " + response.buildingName + " which earned you " + response.pointsValue + " points.";
-                        $('#redemption-message').text(redemptionMessage);
-                        console.log('Score written successfully:', response);
-                    },
-                    error: function(xhr, status, error){
-                        // Handle error response
-                        console.error('Error writing to score table:', error);
-                    }
-                });
+                
             }else {
                 // Custom cookie does not exist, user is not logged in
                 alert("Please log in to redeem points.");
