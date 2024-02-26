@@ -21,7 +21,7 @@
             }
         </script>
     <h1>Welcome to the Redeem Points Page</h1>
-    <p>Here you can redeem your points for exciting rewards!</p>
+    <div id="redemption-message"></div>
     
     <script>
         // Get the buildingID and actionID from the URL
@@ -102,9 +102,11 @@
                     },
                     success: function(response) {
                         // Handle success response
+                        var redemptionMessage = "Congratulations! You have redeemed the action: " + response.actionName + " at the building: " + response.buildingName + " which earned you " + response.pointsValue + " points.";
+                        $('#redemption-message').text(redemptionMessage);
                         console.log('Score written successfully:', response);
                     },
-                    error: function(xhr, status, error) {
+                    error: function(xhr, status, error){
                         // Handle error response
                         console.error('Error writing to score table:', error);
                     }
