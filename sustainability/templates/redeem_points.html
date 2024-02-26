@@ -68,11 +68,14 @@
             }
         }
 
-        function redeemPoints(buildingID, actionID,userID) {
+        function redeemPoints(buildingID, actionID) {
             //check if user is authenticated
-            var customCookieValue = getCookie('custom_cookie_name');
-            if (customCookieValue) {
-                console.log(customCookieValue);
+            const userID = getCookie('userID');
+            if (!userID) {
+                window.location.href = '/login'; // Replace '/login' with the actual login page URL
+            }          
+            console.log(userID) 
+            if (userID) {
                 //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
                 $.ajax({
                     url: `/get-building-and-action-names/${buildingID}/${actionID}/`,
@@ -89,11 +92,14 @@
                 });
 
                 var dateTimeEarned = new Date().toISOString();
-
+                var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
                 // AJAX request to write to the score table
                 $.ajax({
                     url: '/write-to-score-table/',
                     type: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
                     data: {
                         userID: userID,
                         buildingID: buildingID,
@@ -119,18 +125,11 @@
             
         }
 
-        function getCookie(cookieName) {
-        var name = cookieName + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var cookieArray = decodedCookie.split(';');
-        for(var i = 0; i < cookieArray.length; i++) {
-            var cookie = cookieArray[i].trim();
-            if (cookie.indexOf(name) === 0) {
-                return cookie.substring(name.length, cookie.length);
-            }
-        }
-        return "";
+    function getCookie(name) {
+    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return cookieValue ? cookieValue.pop() : '';
     }
+    
     </script>
 </body>
 </html>
