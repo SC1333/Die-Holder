@@ -34,6 +34,7 @@ class Score(models.Model):
     action_done = models.ForeignKey(Action, on_delete=models.CASCADE)
     datetime_earned = models.DateTimeField()
 
+
 class Player(models.Model):
     user = models.OneToOneField(User,on_delete = models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
