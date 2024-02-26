@@ -30,7 +30,7 @@ class Action(models.Model):
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    birthdate = models.DateTimeField()
+    birthdate = models.DateTimeField(null=True)
     role = models.CharField(max_length=32)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     pts_multiplier = models.FloatField(default=1.0)
