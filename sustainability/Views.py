@@ -127,15 +127,30 @@ def get_building_and_action_names(request, buildingID, actionID):
 
 def write_to_score_table(request):
     if request.method == 'POST':
-        userID = request.POST.get('userID')
-        buildingID = request.POST.get('buildingID')
-        actionID = request.POST.get('actionID')
-        dateTimeEarned = request.POST.get('dateTimeEarned')
-        
-        # Create a new Score object and save it to the database
-        score = Score(user=userID, action_site=buildingID, action_done=actionID, datetime_earned=dateTimeEarned)
-        score.save()
-        
-        return JsonResponse({'success': True})
+        try:
+            userID = request.POST.get('userID')
+            buildingID = request.POST.get('buildingID')
+            actionID = request.POST.get('actionID')
+            dateTimeEarned = request.POST.get('dateTimeEarned')
+            
+            # Create a new Score object and save it to the database
+            score = Score(user=userID, action_site=buildingID, action_done=actionID, datetime_earned=dateTimeEarned)
+            score.save()
+
+            # Retrieve building name, action name, and points value
+            building_name = Stronghold.objects.get(id=buildingID).name
+            action_name = Action.objects.get(id=actionID).name
+            points_value = Action.objects.get(id=actionID).points_value
+
+            return JsonResponse({
+                'success': True,
+                'buildingName': building_name,
+                'actionName': action_name,
+                'pointsValue': points_value
+            })
+        except (Stronghold.DoesNotExist, Action.DoesNotExist):
+            return JsonResponse({'error': 'Building or Action not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
