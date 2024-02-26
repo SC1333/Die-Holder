@@ -196,13 +196,64 @@
     }
   },
   {
-    "model": "sustainability.User",
-    "pk": "user1",
+    "model": "auth.user",
+    "pk": 1,
     "fields": {
+      "password": "pbkdf2_sha256$720000$298VKT7327VnNMNUqXNqTp$61teDvGIMTzuMmdTtUivOWKxfWQDSUiCNDjZuKSuIN8=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user1",
+      "first_name": "First",
+      "last_name": "User",
       "email": "user1@test.net",
-      "password": "password1",
-      "salt": "salt1",
-      "full_name": "User One",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-02-26T17:55:04.390Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$b0ucs8WOXphORc7SVcG4O6$cc2sV/cAxBjmbHeAKLObMEcvAnC5wASnBZtjPtaEjBM=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user2",
+      "first_name": "Second",
+      "last_name": "User",
+      "email": "user2@test.net",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-02-26T17:55:32.070Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$M9pJOc8SyuZUHakgBc9xNX$sWUY4tMIN/7Cazs7Iua9sHolqDM861nBEr/Z5YJ+DU0=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user3",
+      "first_name": "Third",
+      "last_name": "User",
+      "email": "user3@test.net",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-02-26T17:55:46.083Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "sustainability.Player",
+    "pk": 1,
+    "fields": {
+      "user": 1,
       "birthdate": "1990-01-01",
       "role": "player",
       "team": "Team Red",
@@ -210,13 +261,10 @@
     }
   },
   {
-    "model": "sustainability.User",
-    "pk": "user2",
+    "model": "sustainability.Player",
+    "pk": 2,
     "fields": {
-      "email": "user2@test.net",
-      "password": "password2",
-      "salt": "salt2",
-      "full_name": "User Two",
+      "user": 2,
       "birthdate": "1990-01-01",
       "role": "player",
       "team": "Team Green",
@@ -224,13 +272,10 @@
     }
   },
   {
-    "model": "sustainability.User",
-    "pk": "user3",
+    "model": "sustainability.Player",
+    "pk": 3,
     "fields": {
-      "email": "user3@test.net",
-      "password": "password3",
-      "salt": "salt3",
-      "full_name": "User Three",
+      "user": 3,
       "birthdate": "1990-01-01",
       "role": "player",
       "team": "Team Blue",
@@ -240,7 +285,7 @@
   {
     "model": "sustainability.Score",
     "fields": {
-      "user": "user1",
+      "user": 1,
       "action_site": 2,
       "action_done": 1,
       "datetime_earned": "2023-12-31T08:00:00Z"
@@ -249,7 +294,7 @@
   {
     "model": "sustainability.Score",
     "fields": {
-      "user": "user2",
+      "user": 2,
       "action_site": 1,
       "action_done": 2,
       "datetime_earned": "2023-12-31T08:30:00Z"
@@ -258,7 +303,7 @@
   {
     "model": "sustainability.Score",
     "fields": {
-      "user": "user3",
+      "user": 3,
       "action_site": 3,
       "action_done": 1,
       "datetime_earned": "2023-12-31T09:00:00Z"
