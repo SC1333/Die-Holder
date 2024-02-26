@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .forms import RegisterForm
 from .models import Stronghold, Action, Team, User, Score,Player
+from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Sum
 from collections import defaultdict
 
@@ -54,27 +55,28 @@ def auth(request):
 
 def log_in(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        # Authenticate the user
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            # User is authenticated, log them in
-            login(request, user)
-
-            # Set a cookie for the username
-            response = redirect('profile')
-            response.set_cookie('username', user.username)
-
-            return response
-        else:
-            error_message = "Invalid username or password"
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                
+                # Set a cookie for the username
+                response = redirect('/')
+                response.set_cookie('userID', user.username, max_age=3600)
+                
+                return response
+            else:
+                error_message = "Invalid username or password"
     else:
+        form = AuthenticationForm()
         error_message = ""
 
-    return render(request, 'login.html', {'error_message': error_message})
+    return render(request, 'login.html', {'form': form, 'error_message': error_message})
     
 def register(request):
     if request.method == 'POST':
