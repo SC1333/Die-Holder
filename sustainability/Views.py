@@ -69,7 +69,7 @@ def log_in(request):
                 
                 # Set a cookie for the username
                 response = redirect('/')
-                response.set_cookie('userID', user.username, max_age=3600)
+                response.set_cookie('userID', user.id, max_age=3600)
                 
                 return response
             else:
