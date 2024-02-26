@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
@@ -140,13 +140,21 @@ def write_to_score_table(request):
             actionID = request.POST.get('actionID')
             dateTimeEarned = request.POST.get('dateTimeEarned')
             
+
+                # Retrieve the User instance
+            user = get_object_or_404(User, pk=userID)
+            
+            # Retrieve the associated Player instance
+            player = get_object_or_404(Player, user=user)
+            stronghold = get_object_or_404(Stronghold, pk=buildingID)
+            action = get_object_or_404(Action, pk=actionID)
             # Create a new Score object and save it to the database
-            score = Score(user=userID, action_site=buildingID, action_done=actionID, datetime_earned=dateTimeEarned)
+            score = Score(user=player, action_site=stronghold, action_done=action, datetime_earned=dateTimeEarned)
             score.save()
 
             # Retrieve building name, action name, and points value
-            building_name = Stronghold.objects.get(id=buildingID).name
-            action_name = Action.objects.get(id=actionID).name
+            building_name = Stronghold.objects.get(id=buildingID).building_name
+            action_name = Action.objects.get(id=actionID).action_name
             points_value = Action.objects.get(id=actionID).points_value
 
             return JsonResponse({
