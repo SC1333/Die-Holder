@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .forms import RegisterForm
-from .models import Stronghold, Action, User, Score
+from .models import Stronghold, Action, Team, User, Score,Player
 from django.db.models import Sum
 from collections import defaultdict
 
@@ -80,23 +80,26 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-
-            username = form.cleaned_data['username']
-            firstname = form.cleaned_data['firstname']
-            lastname = form.cleaned_data['lastname']
-            dob = form.cleaned_data['dob']
-            email = form.cleaned_data['email']
-            team_colour = form.cleaned_data['team_colour']
-            password = form.cleaned_data['password']
-            
-            new_user = User.objects.create_user(username=username, first_name=firstname, last_name=lastname, dob=dob, email=email, team_color=team_colour, password=form.cleaned_data['password'])
-            new_user.save()
-
-            # Redirect to login or any other page after successful registration
-            return redirect('login')
+            # Create a new User instance
+            user = User.objects.create_user(
+                username=form.cleaned_data['username'],
+                first_name=form.cleaned_data['firstname'],
+                last_name=form.cleaned_data['lastname'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password']
+            )
+              # Reverse map the selected team color to the corresponding color code
+            team_color_code = next(code for code, color in Team.COLORS.items() if color.lower() == form.cleaned_data['team_colour'])
+            # Get the Team object based on the color code
+            team = Team.objects.get(team_color=team_color_code)
+            # Create a new Player instance associated with the User and Team
+            player = Player.objects.create(
+                user=user,
+                team=team
+            )
+            return redirect('/')  # Redirect to a success page
     else:
         form = RegisterForm()
-
     return render(request, 'register.html', {'form': form})
 
 
