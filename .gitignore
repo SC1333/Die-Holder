@@ -1,2 +1,5 @@
 /.venv/
-/db.sqlite3
+.idea/
+*.sqlite3
+/sustainability/migrations/
+__pycache__/

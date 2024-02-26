@@ -4,67 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard</title>
-    <style>
-        /* Add your CSS styling here */
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    {% load static %}
+	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
 </head>
 <body>
-    <h1>Leaderboard</h1>
 
-    <label for="display-type">Display Type:</label>
-    <select id="display-type">
-        <option value="users">Users</option>
-        <option value="groups">Groups</option>
-    </select>
+    <nav>
+        <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
+        <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
+        <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)">Map</button>
+        </nav>
+    
+        <script>
+            function openUrl(button) {
+                var url = button.getAttribute('data-url');
+                window.location.href = url;
+            }
+        </script>
 
-    <div id="users-leaderboard">
-        <h2>Sorted by Individual Users</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Total Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Add dynamic data for individual users here -->
-                <tr>
-                    <td>User1</td>
-                    <td>100</td>
-                </tr>
-                <tr>
-                    <td>User2</td>
-                    <td>90</td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
-    </div>
+    <div class="container mt-5">
+        <h1>Leaderboard</h1>
 
-    <div id="groups-leaderboard" style="display: none;">
-        <h2>Sorted by Groups</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Group</th>
-                    <th>Total Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Add dynamic data for groups here -->
-                <tr>
-                    <td>Group1</td>
-                    <td>500</td>
-                </tr>
-                <tr>
-                    <td>Group2</td>
-                    <td>450</td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
-    </div>
+        <label for="display-type">Display Type:</label>
+        <select id="display-type" class="form-control mb-3">
+            <option value="users">Users</option>
+            <option value="groups">Groups</option>
+        </select>
 
+        <div id="users-leaderboard">
+    <h2>Sorted by Individual Users</h2>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>User</th>
+                <th>Total Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user, points in sorted_users %}
+            <tr>
+                <td>{{ user.full_name }}</td>
+                <td>{{ points }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="groups-leaderboard" style="display: none;">
+    <h2>Sorted by Groups</h2>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Group</th>
+                <th>Total Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group, total_points in sorted_groups %}
+            <tr>
+                <td>{{ group }}</td>
+                <td>{{ total_points }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         document.getElementById('display-type').addEventListener('change', function() {
             var selectedOption = this.value;

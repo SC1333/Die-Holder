@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Team(models.Model):
@@ -13,7 +14,7 @@ class Team(models.Model):
 
 class Stronghold(models.Model):
     building_name = models.CharField(max_length=100, unique=True)
-    controlling_team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    controlling_team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Coordinate(models.Model):
@@ -27,19 +28,13 @@ class Action(models.Model):
     points_value = models.IntegerField()
 
 
-class User(models.Model):
-    email = models.EmailField()
-    password = models.CharField(max_length=86)
-    salt = models.CharField(max_length=24)
-    full_name = models.CharField(max_length=100)
-    birthdate = models.DateField()
-    role = models.CharField(max_length=100)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    pts_multiplier = models.FloatField(default=1.0)
-
-
 class Score(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     action_site = models.ForeignKey(Stronghold, on_delete=models.CASCADE)
     action_done = models.ForeignKey(Action, on_delete=models.CASCADE)
     datetime_earned = models.DateTimeField()
+
+class Player(models.Model):
+    user = models.OneToOneField(User,on_delete = models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    pts_multiplier = models.FloatField(default=1.0)
