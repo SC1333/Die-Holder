@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!--All code within this page is written by Thomas Shannon-->
     <title>Redeem Points</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     {% load static %}
 	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
 </head>
-<body onload="getUserLocation()"> <!-- Call the getUserLocation function when the page loads for finished product getUserLocation should be here -->
+<body onload="getUserLocation()"> <!-- Call the getUserLocation to begin checking if the user is on the streatham campus -->
     <nav>
         <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
         <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
@@ -39,9 +40,9 @@
             // Check if the user is within the boundaries of the University of Exeter
             if (latitude >= 50.729 && latitude <= 50.744 && longitude >= -3.54 && longitude <= -3.5260) {
                 // User is within the boundaries
-                var buildingID = {buildingID};
+                var buildingID = {buildingID}; //extract parameters from the URL
                 var actionID = {actionID};
-                redeemPoints(buildingID, actionID);
+                redeemPoints(buildingID, actionID); //call the function to redeem the points from the QR code scanned by the user
               
                 
             } else {
@@ -51,7 +52,7 @@
             }
         }
 
-        function showError(error) {
+        function showError(error) { //error function for the geolocation library
             switch (error.code) {
                 case error.PERMISSION_DENIED:
                     alert("User denied the request for Geolocation.");
@@ -69,13 +70,12 @@
         }
 
         function redeemPoints(buildingID, actionID) {
-            //check if user is authenticated
-            const userID = getCookie('userID');
+            //check if user is authenticated and extract the cookie data
+            const userID = getCookie('userID'); 
             if (!userID) {
-                window.location.href = '/login'; // Replace '/login' with the actual login page URL
-            }          
-            console.log(userID) 
-            if (userID) {
+                window.location.href = '/login'; //redirects the user to the login page if not logged in
+            }
+            if (userID) {//user is logged in
                 //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
                 $.ajax({
                     url: `/get-building-and-action-names/${buildingID}/${actionID}/`,
@@ -83,10 +83,8 @@
                     success: function(response) {
                         var buildingName = response.buildingName;
                         var actionName = response.actionName;
-                        console.log('Building Name:', buildingName);
-                        console.log('Action Name:', actionName);
                         var dateTimeEarned = new Date().toISOString();
-                        var csrftoken = getCookie('csrftoken');
+                        var csrftoken = getCookie('csrftoken'); //token used to authorise database write query
                         // AJAX request to write to the score table
                         $.ajax({
                             url: '/write-to-score-table/',
@@ -101,10 +99,9 @@
                                 dateTimeEarned: dateTimeEarned
                             },
                             success: function(response) {
-                                // Handle success response
+                                // Update the dynamic HTML element to display validation that the user has earned the points
                                 var redemptionMessage = "Congratulations! You have redeemed the action: " + response.actionName + " at the building: " + response.buildingName + " which earned you " + response.pointsValue + " points.";
                                 $('#redemption-message').text(redemptionMessage);
-                                console.log('Score written successfully:', response);
                             },
                             error: function(xhr, status, error){
                                 // Handle error response
@@ -125,7 +122,7 @@
             
         }
 
-    function getCookie(name) {
+    function getCookie(name) { //function to extract the cookie
     const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
     return cookieValue ? cookieValue.pop() : '';
     }
