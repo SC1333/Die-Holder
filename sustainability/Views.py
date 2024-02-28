@@ -61,16 +61,29 @@ Written by Fedor Morgunov
 def auth(request):
     return render(request, 'auth.html')
 
+"""
+ This function andles user login authentication.
+
+    Parameters:
+    - request: HttpRequest object containing requesting the login user information
+
+Written by Jiadong Cheang
+"""
+
 
 def log_in(request):
     if request.method == 'POST':
+        # Create an AuthenticationForm instance with the POST data
         form = AuthenticationForm(request, request.POST)
+        
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             
+            # Authenticate the user
             user = authenticate(request, username=username, password=password)
             
+            # If user is authenticated, log them in
             if user is not None:
                 login(request, user)
                 
@@ -80,18 +93,21 @@ def log_in(request):
                 
                 return response
             else:
+                # If authentication fails, set an error message
                 error_message = "Invalid username or password"
     else:
         form = AuthenticationForm()
         error_message = ""
 
+    # Render the login.html template with the form and error message
     return render(request, 'login.html', {'form': form, 'error_message': error_message})
+
 
 
 """
 This function takes the values from the registration form and creates the necessary django auth user and the associated player instance in the database
 
-Written by Jiadong(insert surname) and Tom Shannon
+Written by Jiadong Cheang and Tom Shannon
 """
 
 
