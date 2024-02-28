@@ -40,12 +40,12 @@
             // Check if the user is within the boundaries of the University of Exeter
             if (latitude >= 50.729 && latitude <= 50.744 && longitude >= -3.54 && longitude <= -3.5260) {
                 // User is within the boundaries
-                var buildingID = {buildingID}; //extract parameters from the URL
-                var actionID = {actionID};
+                var buildingID = {{buildingID}};
+                var actionID = {{actionID}};
                 redeemPoints(buildingID, actionID); //call the function to redeem the points from the QR code scanned by the user
               
                 
-            } else {
+            }else{
                 // User is outside the boundaries
                 alert("You are outside the boundaries of the University of Exeter therefore you cannot redeem points.");
                 window.location.href = "/"; // Redirect to the home page
@@ -77,6 +77,8 @@
             }
             if (userID) {//user is logged in
                 //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
+                console.log(buildingID);
+                console.log(actionID);
                 $.ajax({
                     url: `/get-building-and-action-names/${buildingID}/${actionID}/`,
                     type: 'GET',
