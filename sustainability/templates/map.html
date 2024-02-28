@@ -1,12 +1,17 @@
+<!--Code primarily written by Silvia with assisstance from Tim -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title>Campus Locations</title>
+     <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     <link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
+    <!--Mapbox Script and CSS-->
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
     <style>
-        /* Add your CSS styles here */
         ul {
             list-style-type: none;
             padding: 0;
@@ -21,15 +26,30 @@
     </style>
 </head>
 <body>
+    <nav>
+        <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)" class="btn btn-primary">Leaderboard</button>
+        <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)" class="btn btn-primary">Authentication</button>
+        <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)" class="btn btn-primary">Map</button>
+    </nav>
+
+    
+    <script>
+    function openUrl(button) {
+        var url = button.getAttribute('data-url');
+        window.location.href = url;
+    }
+    </script>
+
     <h1>Select Campus Location</h1>
     <p>Please select a campus location from the list below:</p>
 
-    <form id="campusForm">
+    <!--Drop down form to select a building and to view more infomaiton about it-->
+    <form id="campusForm">  
         <select id="campusSelect" onchange="showLocation()">
             <option value="" selected disabled>Select a Location</option>
-            <option value="location1">Location 1</option>
-            <option value="location2">Location 2</option>
-            <option value="location3">Location 3</option>
+            <option value="Harrison">Harrison</option>
+            <option value="Queens">Queens</option>
+            <option value="Forum">Forum</option>
             <!-- Add more location options as needed -->
         </select>
     </form>
@@ -53,9 +73,9 @@
 
             // Define details for each location
             var locationDetails = {
-                "location1": {name: "Location 1", description: "Description of Location 1"},
-                "location2": {name: "Location 2", description: "Description of Location 2"},
-                "location3": {name: "Location 3", description: "Description of Location 3"}
+                "Harrison": {name: "Harrison", description: "One of the main buildings for Engineering based degrees along with computer Science and Mathematics"},
+                "Queens": {name: "Queens", description: "Used for a variety subjects but primarily for english and the arts"},
+                "Forum": {name: "Forum", description: "The hub of Streatham Campus containing coffee shops, SID and the career zone"}
                 // Add more locations and their descriptions as needed
             };
 
@@ -74,6 +94,37 @@
 <div id="map"></div>
 
 <script>
+    //map of building ID to make code more readable
+    const idMap = new Map([
+  ['Harrison', 27314281],
+  ['Laver', 11803404],
+  ['Amory', 27315944],
+  ['INTO', 167907357],
+  ['Physics', 27313808],
+  ['Newman', 27314032],
+  ['Peter chalk', 27314118],
+  ['Geoffrey pope', 27314280],
+  ['Geoffrey pope2', 475846710],
+  ['Queens', 7200443],
+  ['DH', 170941331],
+  ['Henry', 167907365],
+  ['Library', 26683102],
+  ['Hatherly', 26682909],
+  ['Streatham court', 27919393],
+  ['Business school', 136597064],
+  ['Xfi', 27919104],
+  ['SWIOT', 27314451],
+  ['Innovation', 27314497],
+  ['Sports park', 27454614],
+  ['Lemon grove', 27315688],
+  ['Tennis centre', 44647043],
+  ['Northcott theatre', 26683720],
+  ['Northcott house', 26683671],
+  ['Washington singer', 26682543],
+  ['Marketplace', 162102795],
+  ['Great hall', 26683509]
+]);
+
     mapboxgl.accessToken = 'pk.eyJ1IjoiMTg0NDUxai1ueXAiLCJhIjoiY2xzc3Q1cnQ4MTluOTJrcW1zODBmZXh3byJ9.udDssIarSHnvW1rxY6Yc-g';
 
     const map = new mapboxgl.Map({
@@ -84,7 +135,24 @@
         pitch:10,
     });
 
+    //repeated aspects of paint function
+    const commonPaint = {
+    'fill-extrusion-height': [
+    'interpolate', ['linear'], ['zoom'],
+    15, 0,
+    15.05, ['get', 'height']
+  ],
+  'fill-extrusion-base': [
+    'interpolate', ['linear'], ['zoom'],
+    15, 0,
+    15.05, ['get', 'min_height']
+  ],
+  'fill-extrusion-opacity': 0.6
+};
+
     map.on('load', () => {
+        //basis layer for all 3d buildins that allows abillity to check for building IDs through console
+        //Also gives detail for actual buildings which can be added visually
         map.addLayer({
             'id': '3d-buildings',
             'source': 'composite',
@@ -93,22 +161,88 @@
             'type': 'fill-extrusion',
             'minzoom': 15,
             'paint': {
+                ...commonPaint,
                 'fill-extrusion-color': '#aaa',
-                'fill-extrusion-height': [
-                    'interpolate', ['linear'], ['zoom'],
-                    15, 0,
-                    15.05, ['get', 'height']
-                ],
-                'fill-extrusion-base': [
-                    'interpolate', ['linear'], ['zoom'],
-                    15, 0,
-                    15.05, ['get', 'min_height']
-                ],
-                'fill-extrusion-opacity': 0.6
             },
-            //'filter': ['==', ['id'], 27315944] highlights only the amory building
         });
 
+        //Highlights specified buildings into respective colours as show in ID
+        map.addLayer({
+            'id': 'red-buildings',
+            'source': 'composite',
+            'source-layer': 'building',
+            'filter': ['==', 'extrude', 'true'],
+            'type': 'fill-extrusion',
+            'minzoom': 15,
+            'paint': {
+                ...commonPaint,
+                'fill-extrusion-color': '#ff0000',
+            },
+        //filter that determines which buildings need to be highlighted for this team
+        //Needs to be changed to use part of the database to make more dynamic
+	'filter': ['any', 
+           ['==', ['id'], idMap.get('Harrison')],
+           ['==', ['id'], idMap.get('DH')],
+           ['==', ['id'], idMap.get('Laver')],
+           ['==', ['id'], idMap.get('Amory')],
+           ['==', ['id'], idMap.get('INTO')],
+           ['==', ['id'], idMap.get('Physics')],
+           ['==', ['id'], idMap.get('Marketplace')],
+           ['==', ['id'], idMap.get('Newman')]
+
+          ]
+});
+
+        map.addLayer({
+            'id': 'green-buildings',
+            'source': 'composite',
+            'source-layer': 'building',
+            'filter': ['==', 'extrude', 'true'],
+            'type': 'fill-extrusion',
+            'minzoom': 15,
+            'paint': {
+                ...commonPaint,
+                'fill-extrusion-color': '#00ff00',
+            },
+	'filter': ['any', 
+        ['==', ['id'], idMap.get('Geoffrey pope')], 
+        ['==', ['id'], idMap.get('Geoffrey pope2')], 
+        ['==', ['id'], idMap.get('Queens')], 
+        ['==', ['id'], idMap.get('Library')],
+        ['==', ['id'], idMap.get('Hatherly')],
+        ['==', ['id'], idMap.get('Streatham court')],
+        ['==', ['id'], idMap.get('Business school')], 
+        ['==', ['id'], idMap.get('Xfi')],
+        ['==', ['id'], idMap.get('Henry')]
+          ]
+});
+
+        map.addLayer({
+            'id': 'blue-buildings',
+            'source': 'composite',
+            'source-layer': 'building',
+            'filter': ['==', 'extrude', 'true'],
+            'type': 'fill-extrusion',
+            'minzoom': 15,
+            'paint': {
+                ...commonPaint,
+                'fill-extrusion-color': '#0000ff',
+            },
+	'filter': ['any', 
+        ['==', ['id'], idMap.get('SWIOT')], 
+        ['==', ['id'], idMap.get('Innovation')],
+        ['==', ['id'], idMap.get('Sports park')],
+        ['==', ['id'], idMap.get('Tennis centre')],
+        ['==', ['id'], idMap.get('Northcott theatre')],
+        ['==', ['id'], idMap.get('Northcott house')],
+        ['==', ['id'], idMap.get('Peter chalk')],
+        ['==', ['id'], idMap.get('Lemon grove')],
+        ['==', ['id'], idMap.get('Great hall')],
+        ['==', ['id'], idMap.get('Washington singer')]
+          ]
+});
+
+        //prints a building ID to console which allows buildings to be added to the map variable listed above
         map.on('click', '3d-buildings', function (e) {
             if (e.features.length > 0) {
                 const clickedFeature = e.features[0];
