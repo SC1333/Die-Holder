@@ -50,6 +50,13 @@ def leaderboard(request):
 
     return render(request, 'leaderboard.html', {'sorted_users': sorted_users, 'sorted_groups': sorted_groups})
 
+"""
+This function links leaderboard url to leaderboard.html file. It also passes dicts that contain sorted users with total points
+and groups with total points.
+
+Written by Fedor Morgunov
+"""
+
 
 def auth(request):
     return render(request, 'auth.html')
