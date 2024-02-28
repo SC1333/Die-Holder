@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .forms import RegisterForm
-from .models import Stronghold, Action, Team, User, Score,Player
+from .models import Stronghold, Action, Team, Score, Player
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Sum
 from collections import defaultdict
@@ -30,7 +30,7 @@ def leaderboard(request):
         # Get the related user instance
         user = player.user
         # Get all actions done by the user
-        user_actions = Score.objects.filter(user=user)
+        user_actions = Score.objects.filter(user=user.pk)
         # Aggregate total points for those actions
         total_points = user_actions.aggregate(total_points=Sum('action_done__points_value'))['total_points'] or 0
         # Apply user's point multiplier
