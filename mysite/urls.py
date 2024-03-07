@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from sustainability.urls import adminSite
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("sustainability.urls"))
+    path("admin/",admin.site.urls),
+    path("", include("sustainability.urls")),
 ]
