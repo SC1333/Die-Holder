@@ -10,7 +10,9 @@ from django.views.generic import TemplateView, FormView
 from django_otp import devices_for_user
 from django_otp.decorators import otp_required
 from django_otp.views import LoginView
-
+import qrcode
+from django.http import HttpResponse
+from django_otp.plugins.otp_totp.models import TOTPDevice
 from .forms import RegisterForm
 from .models import Stronghold, Action, Team, Score, Player
 from django.contrib.auth.forms import AuthenticationForm
@@ -285,9 +287,7 @@ def write_to_score_table(request):
 
 
 
-import qrcode
-from django.http import HttpResponse
-from django_otp.plugins.otp_totp.models import TOTPDevice
+
 
 def generate_totp_secret(request):
     # Generate TOTP secret key
@@ -307,7 +307,7 @@ def generate_totp_secret(request):
     return response
 
 
-def admin_two_factor_auth_data_create(*, user) -> AdminTwoFactorAuthData:
+def admin_two_factor_auth_data_create(*, user) -> AdminTwoFactorAuthData: #define the view that generates the otp_secret
     if hasattr(user, 'two_factor_auth_data'):
         raise ValidationError(
             'Can not have more than one 2FA related data.'
@@ -319,14 +319,14 @@ def admin_two_factor_auth_data_create(*, user) -> AdminTwoFactorAuthData:
     return two_factor_auth_data
 
 
-class AdminSetupTwoFactorAuthView(TemplateView):
+class AdminSetupTwoFactorAuthView(TemplateView): #defining the logic for the setup 2fa page
     template_name = "custom_admin/setup_2fa.html"
 
     def post(self, request):
         context = {}
         user = request.user
 
-        try:
+        try:#dynamically update the page when the generate button is pressed to display both the code and the QRcode
             two_factor_auth_data = admin_two_factor_auth_data_create(user=user)
             otp_secret = two_factor_auth_data.otp_secret
             print(otp_secret)
@@ -338,14 +338,14 @@ class AdminSetupTwoFactorAuthView(TemplateView):
         return render(request, self.template_name, context)
 
 
-class AdminConfirmTwoFactorAuthView(FormView):
+class AdminConfirmTwoFactorAuthView(FormView): #defining the logic for the confirm 2fa page
     template_name = "custom_admin/confirm_2fa.html"
     success_url = reverse_lazy("admin:index")
 
     class Form(forms.Form):
         otp = forms.CharField(required=True)
 
-        def clean_otp(self):
+        def clean_otp(self): #takes the form data and checks to see if the otp matches
             self.two_factor_auth_data = AdminTwoFactorAuthData.objects.filter(
                 user=self.user
             ).first()
@@ -370,5 +370,9 @@ class AdminConfirmTwoFactorAuthView(FormView):
 
         return form
 
-    def form_valid(self, form):
+    def form_valid(self, form): # assigns the 2fa cookie
+        form.two_factor_auth_data.rotate_session_identifier()
+
+        self.request.session['2fa_token'] = str(form.two_factor_auth_data.session_identifier)
+
         return super().form_valid(form)

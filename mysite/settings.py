@@ -37,8 +37,8 @@ OTP_TOTP_NAME = 'sustainability'
 # Application definition
 
 INSTALLED_APPS = [
-    #"django.contrib.admin",
-    "sustainability.custom_admin.apps.CustomAdminConfig",
+    #"django.contrib.admin", this is the default admin page
+    "sustainability.custom_admin.apps.CustomAdminConfig", # this is the new custom page
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
