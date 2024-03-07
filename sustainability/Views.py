@@ -1,10 +1,13 @@
 import qrcode
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django_otp import devices_for_user
+from django_otp.decorators import otp_required
+from django_otp.views import LoginView
 
 from .forms import RegisterForm
 from .models import Stronghold, Action, Team, Score, Player
@@ -20,7 +23,17 @@ import io
 
 
 def home(request):
-    return render(request, 'home.html')
+    if request.user.is_authenticated:
+        user = request.user
+        has_2fa_device = TOTPDevice.objects.filter(user=user).exists()
+    else:
+        has_2fa_device = False
+
+    context = {
+        'has_2fa_device': has_2fa_device,
+    }
+
+    return render(request, 'home.html', context)
 
 
 def leaderboard(request):
