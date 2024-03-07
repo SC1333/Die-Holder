@@ -92,7 +92,9 @@ def log_in(request):
                 otp_devices = devices_for_user(user)
                 try:
                     device = next(otp_devices)  # Get the first OTP device
-                    return redirect('/otplogin')  # Redirect to OTP login page
+                    response = redirect('/otplogin')  # Redirect to OTP login page
+                    response.set_cookie('userID', user.id, max_age=3600)
+                    return response
                 except StopIteration:
                     # No OTP device found, proceed with standard login
                     login(request, user)
@@ -115,12 +117,23 @@ def log_in(request):
 def otp_login(request):
     if request.method == 'POST':
         otp_code = request.POST.get('otp_code')
-        user = request.user  # Assuming the user is already authenticated
-
+        try:
+            user_id = request.COOKIES['userID']
+        except KeyError:
+            print("error")
+            #Cookie is not set
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
         try:
             # Check if the user has an OTP device configured
             otp_devices = devices_for_user(user)
-            device = next(otp_devices)
+            try:
+                device = next(otp_devices)
+            except StopIteration:
+                # Handle the case where the iterator is exhausted
+                device = None  # Or any default value you want to assign
             if device.verify_token(otp_code):
                 # OTP code is valid, log in the user
                 login(request, user)
