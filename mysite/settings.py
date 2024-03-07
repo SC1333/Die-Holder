@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+import sustainability.custom_admin.apps
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-!ywuh&)1@ipfa*q0bt0vq7+f-0kob@9@^5y=%avtxce7%_(_=q"
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -34,7 +37,8 @@ OTP_TOTP_NAME = 'sustainability'
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    #"django.contrib.admin",
+    "sustainability.custom_admin.apps.CustomAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
