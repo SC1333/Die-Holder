@@ -25,7 +25,7 @@
             window.location.href = url;
         }
     </script>
-        
+     
             <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -34,6 +34,9 @@
     <div class="container">
         <h1>Welcome to the Sustainability App</h1>
         <p>This is a simple home page for the Sustainability App.</p>
+        {% if not has_2fa_device %} <!--display a button to allow users to setup 2fa -->
+        <a href="{% url 'sustainability:setup' %}">It looks like you have not yet setup two factor authentication you can do so by clicking here or by visiting the /setup page</a>
+     {% endif %}   
 
         <div class="jumbotron">
             <h2>University of Exeter's Strategy 2030</h2>

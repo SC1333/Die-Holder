@@ -1,13 +1,21 @@
+import qrcode
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django_otp import devices_for_user
+from django_otp.decorators import otp_required
+from django_otp.views import LoginView
+
 from .forms import RegisterForm
 from .models import Stronghold, Action, Team, Score, Player
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Sum
 from collections import defaultdict
+from django_otp.plugins.otp_totp.models import TOTPDevice
+import io
 
 # creating the webpages
 
@@ -15,7 +23,17 @@ from collections import defaultdict
 
 
 def home(request):
-    return render(request, 'home.html')
+    if request.user.is_authenticated:
+        user = request.user
+        has_2fa_device = TOTPDevice.objects.filter(user=user).exists()
+    else:
+        has_2fa_device = False
+
+    context = {
+        'has_2fa_device': has_2fa_device,
+    }
+
+    return render(request, 'home.html', context)
 
 
 def leaderboard(request):
@@ -73,36 +91,78 @@ Written by Jiadong Cheang
 
 def log_in(request):
     if request.method == 'POST':
-        # Create an AuthenticationForm instance with the POST data
         form = AuthenticationForm(request, request.POST)
-        
+
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            
-            # Authenticate the user
+
+            # Authenticate the user using username/password
             user = authenticate(request, username=username, password=password)
-            
-            # If user is authenticated, log them in
+
             if user is not None:
-                login(request, user)
-                
-                # Set a cookie for the username
-                response = redirect('/')
-                response.set_cookie('userID', user.id, max_age=3600)
-                
-                return response
+                # Check if the user has an OTP device configured
+                otp_devices = devices_for_user(user)
+                try:
+                    device = next(otp_devices)  # Get the first OTP device
+                    response = redirect('/otplogin')  # Redirect to OTP login page
+                    response.set_cookie('userID', user.id, max_age=3600)
+                    return response
+                except StopIteration:
+                    # No OTP device found, proceed with standard login
+                    login(request, user)
+                    response = redirect('/')
+                    response.set_cookie('userID', user.id, max_age=3600)
+                    return response
             else:
-                # If authentication fails, set an error message
+                # Authentication failed, set error message
                 error_message = "Invalid username or password"
+        else:
+            # Invalid form data, set error message
+            error_message = "Invalid username or password"
     else:
         form = AuthenticationForm()
         error_message = ""
 
-    # Render the login.html template with the form and error message
     return render(request, 'login.html', {'form': form, 'error_message': error_message})
 
 
+def otp_login(request):
+    if request.method == 'POST':
+        otp_code = request.POST.get('otp_code')
+        try:
+            user_id = request.COOKIES['userID']
+        except KeyError:
+            print("error")
+            #Cookie is not set
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
+        try:
+            # Check if the user has an OTP device configured
+            otp_devices = devices_for_user(user)
+            try:
+                device = next(otp_devices)
+            except StopIteration:
+                # Handle the case where the iterator is exhausted
+                device = None  # Or any default value you want to assign
+            if device.verify_token(otp_code):
+                # OTP code is valid, log in the user
+                login(request, user)
+                response = redirect('/')
+                response.set_cookie('userID', user.id, max_age=3600)
+                return response
+            else:
+                # Invalid OTP code, set error message
+                error_message = "Invalid OTP code"
+        except TOTPDevice.DoesNotExist:
+            # No OTP device found for the user, set error message
+            error_message = "OTP authentication is not enabled for your account"
+    else:
+        error_message = ""
+
+    return render(request, 'login_with_otp.html', {'error_message': error_message})
 
 """
 This function takes the values from the registration form and creates the necessary django auth user and the associated player instance in the database
@@ -211,3 +271,27 @@ def write_to_score_table(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+
+import qrcode
+from django.http import HttpResponse
+from django_otp.plugins.otp_totp.models import TOTPDevice
+
+def generate_totp_secret(request):
+    # Generate TOTP secret key
+    user = request.user
+    totp_device = TOTPDevice.objects.create(user=user)
+    totp_secret = totp_device.config_url
+
+    # Generate QR code
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+    qr.add_data(totp_secret)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Return QR code image
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+

@@ -1,0 +1,7 @@
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="username" value="{{ username }}">
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="text" name="otp_code" placeholder="OTP Code" required>
+    <button type="submit">Login</button>
+</form>

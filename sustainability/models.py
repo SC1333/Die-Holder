@@ -34,10 +34,11 @@ class Player(models.Model):
     role = models.CharField(max_length=32)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     pts_multiplier = models.FloatField(default=1.0)
-
+    is_2fa_enabled = models.BooleanField(default=False)
 
 class Score(models.Model):
     user = models.ForeignKey(Player, on_delete=models.CASCADE)
     action_site = models.ForeignKey(Stronghold, on_delete=models.CASCADE)
     action_done = models.ForeignKey(Action, on_delete=models.CASCADE)
     datetime_earned = models.DateTimeField()
+
