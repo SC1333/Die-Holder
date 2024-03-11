@@ -3,7 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
@@ -25,7 +25,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django import forms
 import pyotp
-
+from django.urls import reverse
 from .models import AdminTwoFactorAuthData
 import secrets
 import base64
@@ -48,6 +48,9 @@ def home(request):
 
     return render(request, 'home.html', context)
 
+def custom_logout(request):
+   logout(request)
+   return redirect(reverse('sustainability:home'))
 
 def leaderboard(request):
     # Get data from the database
