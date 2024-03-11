@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django_otp.admin import OTPAdminSite
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
+from .Views import custom_logout
+
 
 class OTPAdmin(OTPAdminSite):
     pass
@@ -22,6 +24,7 @@ urlpatterns = [
     path('leaderboard/', Views.leaderboard, name='leaderboard'),
     path('auth/', Views.auth, name='auth'),
     path('login/', Views.log_in, name='login'),
+    path('logout/', custom_logout, name='logout'),
     path('otplogin/', Views.otp_login, name='otplogin'),
     path('register/', Views.register, name='register'),
     path('map/', Views.map, name='map'),
