@@ -3,8 +3,8 @@ This project focuses on introducing moresustainabillity within the university of
 
 Group Members:
 Thomas Shannon
-Jiadong Cheang
-Alexander Pryce
-Fedor Morgunov
-Silvia Chapman
-Timothy John Low
+,Jiadong Cheang
+,Alexander Pryce
+,Fedor Morgunov
+,Silvia Chapman
+,Timothy John Low
