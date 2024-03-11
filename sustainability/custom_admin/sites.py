@@ -1,9 +1,11 @@
+from django.shortcuts import redirect
 from django.urls import path, reverse
 from django.contrib import admin
-from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth import REDIRECT_FIELD_NAME, authenticate
 
 from sustainability.Views import AdminSetupTwoFactorAuthView, AdminConfirmTwoFactorAuthView
 from sustainability.models import AdminTwoFactorAuthData
+from django.contrib.auth import login as auth_login
 
 
 class AdminSite(admin.AdminSite):  # defining the new admin site
@@ -25,26 +27,28 @@ class AdminSite(admin.AdminSite):  # defining the new admin site
 
         return extra_urlpatterns + base_urlpatterns
 
-    def login(self, request, *args, **kwargs): # overriding the login function
+
+
+    def login(self, request, *args, **kwargs):
         if request.method != 'POST':
             return super().login(request, *args, **kwargs)
 
         username = request.POST.get('username')
 
-        two_factor_auth_data = AdminTwoFactorAuthData.objects.filter( # querying for the user
-            user__email=username
-        ).first()
+        user = authenticate(request, username=username, password=request.POST.get('password'))
 
-        request.POST._mutable = True
-        request.POST[REDIRECT_FIELD_NAME] = reverse('admin:confirm-2fa') # if the user has 2fa setup display the confirm page
+        if user is not None:
+            auth_login(request, user)  # Perform the login using Django's built-in function
 
-        if two_factor_auth_data is None:
-            request.POST[REDIRECT_FIELD_NAME] = reverse("admin:setup-2fa") # if the user doesnt have 2fa setup display the setup page
+            # Check if the user has 2FA data associated with their account
+            two_factor_auth_data = AdminTwoFactorAuthData.objects.filter(user=user).first()
 
-        request.POST._mutable = False
+            if two_factor_auth_data:
+                return redirect('admin:confirm-2fa')  # Redirect to 2FA confirmation page
+            else:
+                return redirect('admin:setup-2fa')  # Redirect to 2FA setup page if no 2FA data
 
         return super().login(request, *args, **kwargs)
-
     def has_permission(self, request): # overriding the permissions function
         has_perm = super().has_permission(request)
 
