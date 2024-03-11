@@ -71,64 +71,56 @@
 
         function redeemPoints(buildingID, actionID) {
             //check if user is authenticated and extract the cookie data
-            const userID = getCookie('userID'); 
-            if (!userID) {
-                window.location.href = '/login'; //redirects the user to the login page if not logged in
-            }
-            if (userID) {//user is logged in
-                //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
-                console.log(buildingID);
-                console.log(actionID);
-                $.ajax({
-                    url: `/get-building-and-action-names/${buildingID}/${actionID}/`,
-                    type: 'GET',
-                    success: function(response) {
-                        var buildingName = response.buildingName;
-                        var actionName = response.actionName;
-                        var dateTimeEarned = new Date().toISOString();
-                        var csrftoken = getCookie('csrftoken'); //token used to authorise database write query
-                        // AJAX request to write to the score table
-                        $.ajax({
-                            url: '/write-to-score-table/',
-                            type: 'POST',
-                            headers: {
-                                'X-CSRFToken': csrftoken
-                            },
-                            data: {
-                                userID: userID,
-                                buildingID: buildingID,
-                                actionID: actionID,
-                                dateTimeEarned: dateTimeEarned
-                            },
-                            success: function(response) {
-                                // Update the dynamic HTML element to display validation that the user has earned the points
-                                var redemptionMessage = "Congratulations! You have redeemed the action: " + response.actionName + " at the building: " + response.buildingName + " which earned you " + response.pointsValue + " points.";
-                                $('#redemption-message').text(redemptionMessage);
-                            },
-                            error: function(xhr, status, error){
-                                // Handle error response
-                                console.error('Error writing to score table:', error);
-                            }
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-                
-            }else {
-                // Custom cookie does not exist, user is not logged in
-                alert("Please log in to redeem points.");
-                window.location.href = "/login"; // Redirect to the login page
-            }
-            
-        }
+            fetch('/check-cookie/')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.logged_in) {
+                    alert("You are not logged in, therefore you cannot earn any points please continue to login now:")
+                    window.location.href = '/login'; //redirects the user to the login page if not logged in
 
-    function getCookie(name) { //function to extract the cookie
-    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-    return cookieValue ? cookieValue.pop() : '';
-    }
-    
+                } else {
+                    //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
+                    console.log(buildingID);
+                    console.log(actionID);
+                    $.ajax({
+                        url: `/get-building-and-action-names/${buildingID}/${actionID}/`,
+                        type: 'GET',
+                        success: function (response) {
+                            var buildingName = response.buildingName;
+                            var actionName = response.actionName;
+                            var dateTimeEarned = new Date().toISOString();
+                            var csrftoken = getCookie('csrftoken'); //token used to authorise database write query
+                            // AJAX request to write to the score table
+                            $.ajax({
+                                url: '/write-to-score-table/',
+                                type: 'POST',
+                                headers: {
+                                    'X-CSRFToken': csrftoken
+                                },
+                                data: {
+                                    buildingID: buildingID,
+                                    actionID: actionID,
+                                    dateTimeEarned: dateTimeEarned
+                                },
+                                success: function (response) {
+                                    // Update the dynamic HTML element to display validation that the user has earned the points
+                                    var redemptionMessage = "Congratulations! You have redeemed the action: " + response.actionName + " at the building: " + response.buildingName + " which earned you " + response.pointsValue + " points.";
+                                    $('#redemption-message').text(redemptionMessage);
+                                },
+                                error: function (xhr, status, error) {
+                                    // Handle error response
+                                    console.error('Error writing to score table:', error);
+                                }
+                            });
+                        },
+                    });
+                }
+            })
+        }
+        function getCookie(name) { //function to extract the cookie
+            const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+            return cookieValue ? cookieValue.pop() : '';
+        }
     </script>
 </body>
 </html>

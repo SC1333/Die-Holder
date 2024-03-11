@@ -1,4 +1,7 @@
 import qrcode
+import logging
+
+from cryptography.fernet import InvalidToken
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
@@ -27,10 +30,11 @@ from django import forms
 import pyotp
 from django.urls import reverse
 from .models import AdminTwoFactorAuthData
+
 import secrets
 import base64
 
-# creating the webpages
+
 
 """This section renders the html templates for the webpages"""
 
@@ -49,7 +53,9 @@ def home(request):
     return render(request, 'home.html', context)
 
 def custom_logout(request):
+   request.session.clear()
    logout(request)
+
    return redirect(reverse('sustainability:home'))
 
 def leaderboard(request):
@@ -121,14 +127,13 @@ def log_in(request):
                 otp_devices = devices_for_user(user)
                 try:
                     device = next(otp_devices)  # Get the first OTP device
-                    response = redirect('/otplogin')  # Redirect to OTP login page
-                    response.set_cookie('userID', user.id, max_age=3600)
+                    request.session['id'] = user.pk
+                    response = redirect('/otplogin')
                     return response
                 except StopIteration:
                     # No OTP device found, proceed with standard login
                     login(request, user)
                     response = redirect('/')
-                    response.set_cookie('userID', user.id, max_age=3600)
                     return response
             else:
                 # Authentication failed, set error message
@@ -147,7 +152,7 @@ def otp_login(request):
     if request.method == 'POST':
         otp_code = request.POST.get('otp_code')
         try:
-            user_id = request.COOKIES['userID']
+            user_id = request.session['id']
         except KeyError:
             print("error")
             #Cookie is not set
@@ -167,7 +172,6 @@ def otp_login(request):
                 # OTP code is valid, log in the user
                 login(request, user)
                 response = redirect('/')
-                response.set_cookie('userID', user.id, max_age=3600)
                 return response
             else:
                 # Invalid OTP code, set error message
@@ -253,7 +257,7 @@ def write_to_score_table(request):
     if request.method == 'POST':
         try:
             #obtain the values from the post request
-            userID = request.POST.get('userID')
+            userID = request.user.id
             buildingID = request.POST.get('buildingID')
             actionID = request.POST.get('actionID')
             dateTimeEarned = request.POST.get('dateTimeEarned')
@@ -379,3 +383,7 @@ class AdminConfirmTwoFactorAuthView(FormView): #defining the logic for the confi
         self.request.session['2fa_token'] = str(form.two_factor_auth_data.session_identifier)
 
         return super().form_valid(form)
+
+def check_cookie(request):
+    logged_in = '_auth_user_id' in request.session
+    return JsonResponse({'logged_in': logged_in})
