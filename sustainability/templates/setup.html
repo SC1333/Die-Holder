@@ -1,21 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display QR Code</title>
+    <title>Setup</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    {% load static %}
+	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
+     <style>
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
+    </style>
 </head>
 <body>
-    <img id="qrCodeImage" src="" alt="QR Code">
-    <script>
-        // Fetch QR code image from Django backend and update the image source
-        fetch('/generate-qr-code/')
-            .then(response => response.blob())
-            .then(blob => {
-                const qrCodeImage = document.getElementById('qrCodeImage');
-                qrCodeImage.src = URL.createObjectURL(blob);
-            })
-            .catch(error => console.error('Error fetching QR code:', error));
-    </script>
+ <nav>
+        <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
+        <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
+        <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)">Map</button>
+        </nav>
+    	<!-- Navbar -->  
+        <script>
+            function openUrl(button) {
+                var url = button.getAttribute('data-url');
+                window.location.href = url;
+            }
+        </script>
+    <h1>Setup TOTP</h1>
+    <img src="{{ qr_code }}" alt="QR Code" class="center">
 </body>
 </html>
