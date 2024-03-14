@@ -1,13 +1,15 @@
+from sqlite3 import IntegrityError
+
 import qrcode
 import logging
-
-from cryptography.fernet import InvalidToken
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
 from django_otp import devices_for_user
@@ -30,7 +32,6 @@ from django import forms
 import pyotp
 from django.urls import reverse
 from .models import AdminTwoFactorAuthData
-
 import secrets
 import base64
 
@@ -195,6 +196,7 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
+
             # Create a new User instance
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
@@ -203,18 +205,21 @@ def register(request):
                 email=form.cleaned_data['email'],
                 password=form.cleaned_data['password']
             )
-              # Reverse map the selected team color to the corresponding color code
+            # Reverse map the selected team color to the corresponding color code
             team_color_code = next(code for code, color in Team.COLORS.items() if color.lower() == form.cleaned_data['team_colour'])
             # Get the Team object based on the color code
             team = Team.objects.get(team_color=team_color_code)
             # Create a new Player instance associated with the User and Team
             player = Player.objects.create(
                 user=user,
-                team=team
+                team=team,
+                birthdate=form.cleaned_data['dob'],
             )
-            return redirect('/')  # Redirect to a success page
+            return redirect('/login')  # Redirect to a success page
+
     else:
         form = RegisterForm()
+        form.errors.clear()
     return render(request, 'register.html', {'form': form})
 
 
@@ -295,7 +300,7 @@ def write_to_score_table(request):
 
 
 
-
+@login_required
 def generate_totp_secret(request):
     # Generate TOTP secret key
     user = request.user
@@ -308,10 +313,18 @@ def generate_totp_secret(request):
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
 
-    # Return QR code image
-    response = HttpResponse(content_type="image/png")
-    img.save(response, "PNG")
-    return response
+    # Convert image to data URI
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    img_str = base64.b64encode(buffer.getvalue()).decode()
+
+    data_uri = "data:image/png;base64," + img_str
+
+    # Render the template with QR code data URI
+    context = {"qr_code": data_uri}
+    html_content = render_to_string("setup.html", context)
+
+    return HttpResponse(html_content)
 
 
 def admin_two_factor_auth_data_create(*, user) -> AdminTwoFactorAuthData: #define the view that generates the otp_secret
