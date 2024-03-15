@@ -1,9 +1,8 @@
 from django.contrib import admin
-from .models import Team, Stronghold, Coordinate, Action, User, Score, Player
+from .models import Team, Stronghold, Action, User, Score, Player
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 admin.site.register(Team)
 admin.site.register(Stronghold)
-admin.site.register(Coordinate)
 admin.site.register(Action)
 admin.site.register(Score)
 
