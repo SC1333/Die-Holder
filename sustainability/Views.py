@@ -1,63 +1,29 @@
-from sqlite3 import IntegrityError
-
-import qrcode
-import logging
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse
-from django.http import JsonResponse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.template.loader import render_to_string
-from django.urls import reverse_lazy
-from django.views.generic import TemplateView, FormView
-from django_otp import devices_for_user
-from django_otp.decorators import otp_required
-from django_otp.views import LoginView
-import qrcode
-from django.http import HttpResponse
-from django_otp.plugins.otp_totp.models import TOTPDevice
-from .forms import RegisterForm
-from .models import Stronghold, Action, Team, Score, Player
-from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Sum
-from collections import defaultdict
-from django_otp.plugins.otp_totp.models import TOTPDevice
-import io
-from django.db import models
-from django.conf import settings
-from django.core.exceptions import ValidationError
-from django import forms
-import pyotp
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import PasswordResetForm
+from django.contrib.auth import login, authenticate
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.mail import send_mail
 from django.urls import reverse
-from .models import AdminTwoFactorAuthData
-import secrets
-import base64
+from django.contrib import messages
+from .forms import RegisterForm, PasswordResetForm
+from .models import Stronghold, Action, Team, Score, Player
+from collections import defaultdict
 
 
+# creating the webpages
 
 """This section renders the html templates for the webpages"""
 
 
 def home(request):
-    if request.user.is_authenticated:
-        user = request.user
-        has_2fa_device = TOTPDevice.objects.filter(user=user).exists()
-    else:
-        has_2fa_device = False
+    return render(request, 'home.html')
 
-    context = {
-        'has_2fa_device': has_2fa_device,
-    }
-
-    return render(request, 'home.html', context)
-
-def custom_logout(request):
-   request.session.clear()
-   logout(request)
-
-   return redirect(reverse('sustainability:home'))
 
 def leaderboard(request):
     # Get data from the database
@@ -101,6 +67,67 @@ Written by Fedor Morgunov
 
 def auth(request):
     return render(request, 'auth.html')
+    
+def password_reset_request(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            # Check if the email exists in the User database
+            if User.objects.filter(email=email).exists():
+                user = User.objects.get(email=email)
+                # Generate a password reset token and send email to user
+                token = default_token_generator.make_token(user)
+                uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+                reset_url = request.build_absolute_uri(reverse('password_reset_confirm', kwargs={'uidb64': uidb64, 'token': token}))
+                email_subject = 'Password Reset Request'
+                email_message = f'Hi {user.username},\n\nTo reset your password, click the following link:\n\n{reset_url}'
+                send_mail(email_subject, email_message, 'your_email@gmail.com', [email])
+                messages.success(request, 'Password reset email has been sent.')
+                return redirect('password_reset_done')
+            else:
+                messages.error(request, 'Email does not exist.')
+    else:
+        form = PasswordResetForm()
+
+    return render(request, 'password_reset_request.html', {'form': form})
+
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        # Decode the user ID from base64
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        # Get the user object corresponding to the user ID
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    # Check if the user exists and the token is valid
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                # Save the new password
+                form.save()
+                messages.success(request, 'Your password has been reset. You can now log in with your new password.')
+                return redirect('login')  # Redirect to login page after successful password reset
+        else:
+            # Render the password reset confirmation form
+            form = SetPasswordForm(user)
+        return render(request, 'password_reset_confirm.html', {'form': form})
+    else:
+        # Display an error message for invalid token or user
+        messages.error(request, 'The password reset link is no longer valid. Please request a new one.')
+        return redirect('password_reset')
+
+
+def password_reset_done(request):
+    return render(request, 'password_reset_done.html')
+
+
+def password_reset_complete(request):
+    return render(request, 'password_reset_complete.html')
+    
 
 """
  This function andles user login authentication.
@@ -114,76 +141,36 @@ Written by Jiadong Cheang
 
 def log_in(request):
     if request.method == 'POST':
+        # Create an AuthenticationForm instance with the POST data
         form = AuthenticationForm(request, request.POST)
-
+        
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-
-            # Authenticate the user using username/password
+            
+            # Authenticate the user
             user = authenticate(request, username=username, password=password)
-
+            
+            # If user is authenticated, log them in
             if user is not None:
-                # Check if the user has an OTP device configured
-                otp_devices = devices_for_user(user)
-                try:
-                    device = next(otp_devices)  # Get the first OTP device
-                    request.session['id'] = user.pk
-                    response = redirect('/otplogin')
-                    return response
-                except StopIteration:
-                    # No OTP device found, proceed with standard login
-                    login(request, user)
-                    response = redirect('/')
-                    return response
+                login(request, user)
+                
+                # Set a cookie for the username
+                response = redirect('/')
+                response.set_cookie('userID', user.id, max_age=3600)
+                
+                return response
             else:
-                # Authentication failed, set error message
+                # If authentication fails, set an error message
                 error_message = "Invalid username or password"
-        else:
-            # Invalid form data, set error message
-            error_message = "Invalid username or password"
     else:
         form = AuthenticationForm()
         error_message = ""
 
+    # Render the login.html template with the form and error message
     return render(request, 'login.html', {'form': form, 'error_message': error_message})
 
 
-def otp_login(request):
-    if request.method == 'POST':
-        otp_code = request.POST.get('otp_code')
-        try:
-            user_id = request.session['id']
-        except KeyError:
-            print("error")
-            #Cookie is not set
-        try:
-            user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            return None
-        try:
-            # Check if the user has an OTP device configured
-            otp_devices = devices_for_user(user)
-            try:
-                device = next(otp_devices)
-            except StopIteration:
-                # Handle the case where the iterator is exhausted
-                device = None  # Or any default value you want to assign
-            if device.verify_token(otp_code):
-                # OTP code is valid, log in the user
-                login(request, user)
-                response = redirect('/')
-                return response
-            else:
-                # Invalid OTP code, set error message
-                error_message = "Invalid OTP code"
-        except TOTPDevice.DoesNotExist:
-            # No OTP device found for the user, set error message
-            error_message = "OTP authentication is not enabled for your account"
-    else:
-        error_message = ""
-
-    return render(request, 'login_with_otp.html', {'error_message': error_message})
 
 """
 This function takes the values from the registration form and creates the necessary django auth user and the associated player instance in the database
@@ -196,7 +183,6 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-
             # Create a new User instance
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
@@ -205,21 +191,18 @@ def register(request):
                 email=form.cleaned_data['email'],
                 password=form.cleaned_data['password']
             )
-            # Reverse map the selected team color to the corresponding color code
+              # Reverse map the selected team color to the corresponding color code
             team_color_code = next(code for code, color in Team.COLORS.items() if color.lower() == form.cleaned_data['team_colour'])
             # Get the Team object based on the color code
             team = Team.objects.get(team_color=team_color_code)
             # Create a new Player instance associated with the User and Team
             player = Player.objects.create(
                 user=user,
-                team=team,
-                birthdate=form.cleaned_data['dob'],
+                team=team
             )
-            return redirect('/login')  # Redirect to a success page
-
+            return redirect('/')  # Redirect to a success page
     else:
         form = RegisterForm()
-        form.errors.clear()
     return render(request, 'register.html', {'form': form})
 
 
@@ -262,7 +245,7 @@ def write_to_score_table(request):
     if request.method == 'POST':
         try:
             #obtain the values from the post request
-            userID = request.user.id
+            userID = request.POST.get('userID')
             buildingID = request.POST.get('buildingID')
             actionID = request.POST.get('actionID')
             dateTimeEarned = request.POST.get('dateTimeEarned')
@@ -296,107 +279,3 @@ def write_to_score_table(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-
-
-
-@login_required
-def generate_totp_secret(request):
-    # Generate TOTP secret key
-    user = request.user
-    totp_device = TOTPDevice.objects.create(user=user)
-    totp_secret = totp_device.config_url
-
-    # Generate QR code
-    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-    qr.add_data(totp_secret)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-
-    # Convert image to data URI
-    buffer = io.BytesIO()
-    img.save(buffer, format="PNG")
-    img_str = base64.b64encode(buffer.getvalue()).decode()
-
-    data_uri = "data:image/png;base64," + img_str
-
-    # Render the template with QR code data URI
-    context = {"qr_code": data_uri}
-    html_content = render_to_string("setup.html", context)
-
-    return HttpResponse(html_content)
-
-
-def admin_two_factor_auth_data_create(*, user) -> AdminTwoFactorAuthData: #define the view that generates the otp_secret
-    if hasattr(user, 'two_factor_auth_data'):
-        raise ValidationError(
-            'Can not have more than one 2FA related data.'
-        )
-    two_factor_auth_data = AdminTwoFactorAuthData.objects.create(
-        user=user,
-        otp_secret=pyotp.random_base32()
-    )
-    return two_factor_auth_data
-
-
-class AdminSetupTwoFactorAuthView(TemplateView): #defining the logic for the setup 2fa page
-    template_name = "custom_admin/setup_2fa.html"
-
-    def post(self, request):
-        context = {}
-        user = request.user
-
-        try:#dynamically update the page when the generate button is pressed to display both the code and the QRcode
-            two_factor_auth_data = admin_two_factor_auth_data_create(user=user)
-            otp_secret = two_factor_auth_data.otp_secret
-            print(otp_secret)
-            context["otp_secret"] = otp_secret
-            context["qr_code"] = two_factor_auth_data.generate_qr_code(name=user.email)
-        except ValidationError as exc:
-            context["form_errors"] = exc.messages
-
-        return render(request, self.template_name, context)
-
-
-class AdminConfirmTwoFactorAuthView(FormView): #defining the logic for the confirm 2fa page
-    template_name = "custom_admin/confirm_2fa.html"
-    success_url = reverse_lazy("admin:index")
-
-    class Form(forms.Form):
-        otp = forms.CharField(required=True)
-
-        def clean_otp(self): #takes the form data and checks to see if the otp matches
-            self.two_factor_auth_data = AdminTwoFactorAuthData.objects.filter(
-                user=self.user
-            ).first()
-
-            if self.two_factor_auth_data is None:
-                raise ValidationError('2FA not set up.')
-
-            otp = self.cleaned_data.get('otp')
-
-            if not self.two_factor_auth_data.validate_otp(otp):
-                raise ValidationError('Invalid 2FA code.')
-
-            return otp
-
-    def get_form_class(self):
-        return self.Form
-
-    def get_form(self, *args, **kwargs):
-        form = super().get_form(*args, **kwargs)
-
-        form.user = self.request.user
-
-        return form
-
-    def form_valid(self, form): # assigns the 2fa cookie
-        form.two_factor_auth_data.rotate_session_identifier()
-
-        self.request.session['2fa_token'] = str(form.two_factor_auth_data.session_identifier)
-
-        return super().form_valid(form)
-
-def check_cookie(request):
-    logged_in = '_auth_user_id' in request.session
-    return JsonResponse({'logged_in': logged_in})
