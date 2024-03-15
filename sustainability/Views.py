@@ -400,3 +400,6 @@ class AdminConfirmTwoFactorAuthView(FormView): #defining the logic for the confi
 def check_cookie(request):
     logged_in = '_auth_user_id' in request.session
     return JsonResponse({'logged_in': logged_in})
+
+def privacy(request):
+    return render(request,'privacy.html')

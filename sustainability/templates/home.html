@@ -9,9 +9,10 @@
    <!-- Bootstrap CSS -->
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
    <link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
-  
+    
 </head>
 <body>
+        
 
        <!-- Navigation buttons -->
        <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -71,7 +72,10 @@
        {% if not has_2fa_device %} <!--display a button to allow users to setup 2fa -->
        <a href="{% url 'sustainability:setup' %}">It looks like you have not yet setup two factor authentication you can do so by clicking here or by visiting the /setup page</a>
     {% endif %}  
-
+        <div>
+            <a href="{% url 'sustainability:privacy' %}">View our privacy policy here</a>
+        </div>
+       
 
        <div class="jumbotron">
            <h2>University of Exeter's Strategy 2030</h2>
