@@ -163,6 +163,8 @@ def log_in(request):
             else:
                 # If authentication fails, set an error message
                 error_message = "Invalid username or password"
+        else:
+            error_message = form.error_messages['invalid_login']
     else:
         form = AuthenticationForm()
         error_message = ""
@@ -183,6 +185,11 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
+            is_username_taken = User.objects.filter(username=form.cleaned_data['username']).exists()
+            is_email_taken = User.objects.filter(email=form.cleaned_data['email']).exists()
+            if is_username_taken or is_email_taken:
+                error_message = 'Username already taken' if is_username_taken else 'Email already taken'
+                return render(request, 'register.html', {'form': form, 'error_message': error_message})
             # Create a new User instance
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
