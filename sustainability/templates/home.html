@@ -1,65 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-   {% load static %}
+    
+    {% load static %}
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Welcome to the Sustainability App</title>
    <!-- Bootstrap CSS -->
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-   <link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
-    
+    <link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
+       <style>
+       body {
+           background-image: url({% static 'campus.jpg' %});
+           background-size: cover; /* Cover the entire viewport */
+           background-repeat: no-repeat; /* Do not repeat the image */
+           background-attachment: fixed; /* Fixed background position */
+       }
+   </style>
 </head>
 <body>
-        
 
-       <!-- Navigation buttons -->
-       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-   <!-- Brand/logo -->
-   <a class="navbar-brand" href="#">Sustainability App</a>
-  
-   <!-- Toggler/collapsible Button -->
-   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-       <span class="navbar-toggler-icon"></span>
-   </button>
-
-
-   <!-- Navbar links -->
-   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-       <ul class="navbar-nav mr-auto">
-           <li class="nav-item">
-               <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)" class="nav-link btn btn-link">Leaderboard</button>
-           </li>
-           <li class="nav-item">
-               <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)" class="nav-link btn btn-link">Map</button>
-           </li>
-       </ul>
-
-
-       <!-- User authentication section -->
-       {% if user.is_authenticated %}
-           <div class="dropdown">
-               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                   {{ user.username }}
-               </button>
-               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                   <a class="dropdown-item" href="#">Edit Profile</a>
-                   <a class="dropdown-item" href="{% url 'sustainability:logout' %}">Logout</a>
-               </div>
-           </div>
-       {% else %}
-           <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)" class="btn btn-primary ml-auto">Login/Register</button>
-       {% endif %}
-   </div>
-</nav>
-           <script>
-       function openUrl(button) {
-           var url = button.getAttribute('data-url');
-           window.location.href = url;
-       }
-   </script>
-   
+    {% include 'navbar.html' %}
+    
            <!-- Bootstrap JS -->
    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -68,14 +30,11 @@
 
    <div class="container">
        <h1>Welcome to the Sustainability App</h1>
-       <p>This is a simple home page for the Sustainability App.</p>
+       <p>This is a home page for the Sustainability App.</p>
        {% if not has_2fa_device %} <!--display a button to allow users to setup 2fa -->
        <a href="{% url 'sustainability:setup' %}">It looks like you have not yet setup two factor authentication you can do so by clicking here or by visiting the /setup page</a>
     {% endif %}  
-        <div>
-            <a href="{% url 'sustainability:privacy' %}">View our privacy policy here</a>
-        </div>
-       
+
 
        <div class="jumbotron">
            <h2>University of Exeter's Strategy 2030</h2>
@@ -94,6 +53,7 @@
                    <li>Developing regular reuse pop-up events</li>
                    <li>Investigating opportunities for student reuse</li>
                </ul>
+               <img src="{% static 'Waste_and_recycling.jpeg' %}" alt="Waste and Recycling" style="width: 550px; height: 330px;">
            </div>
            <div class="col-md-6">
                <h3>Recycling</h3>
