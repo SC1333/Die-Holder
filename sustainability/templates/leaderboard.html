@@ -1,3 +1,5 @@
+<!-- Written by Fedor Morgunov -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,18 +12,7 @@
 </head>
 <body>
 
-    <nav>
-        <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
-        <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
-        <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)">Map</button>
-        </nav>
-    	<!-- Navbar -->  
-        <script>
-            function openUrl(button) {
-                var url = button.getAttribute('data-url');
-                window.location.href = url;
-            }
-        </script>
+   {% include 'navbar.html' %}
 
     <div class="container mt-5">
         <h1>Leaderboard</h1>
@@ -91,5 +82,3 @@
 	<!-- Script to switch between the tables -->  
 </body>
 </html>
-
-<!-- Written by Fedor Morgunov -->

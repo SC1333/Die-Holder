@@ -1,55 +1,89 @@
+<!-- Written by Jiadong Cheang and Fedor Morgunov -->
+
 <!DOCTYPE html>
-<!-- Written by Jiadong Cheang -->
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'sustainability/navbar.css' %}">
 </head>
-<body>
-    <h2>Register</h2>
-    {% if error_message %}
-        <p>{{ error_message }}</p>
-    {% endif %}
-    <form action="{% url 'sustainability:register' %}" method="post">
-    {% csrf_token %}
-    <label for="username">Username:</label><br>
-    <input type="text" id="username" name="username" required><br>
-    {% if form.errors.username %}
-        <span class="error">{{ form.errors.username.0 }}</span><br>
-    {% endif %}
-    <label for="firstname">First Name:</label><br>
-    <input type="text" id="firstname" name="firstname" required><br>
-    {% if form.errors.firstname %}
-        <span class="error">{{ form.errors.firstname.0 }}</span><br>
-    {% endif %}
-    <label for="lastname">Last Name:</label><br>
-    <input type="text" id="lastname" name="lastname" required><br>
-    {% if form.errors.lastname %}
-        <span class="error">{{ form.errors.lastname.0 }}</span><br>
-    {% endif %}
-    <label for="dob">Date of Birth:</label><br>
-    <input type="date" id="dob" name="dob" required><br>
-    {% if form.errors.dob %}
-        <span class="error">{{ form.errors.dob.0 }}</span><br>
-    {% endif %}
-    <label for="email">Email:</label><br>
-    <input type="email" id="email" name="email" required><br>
-    {% if form.errors.email %}
-        <span class="error">{{ form.errors.email.0 }}</span><br>
-    {% endif %}
-    <label for="password">Password:</label><br>
-    <input type="password" id="password" name="password" required><br>
-    {% if form.errors.password %}
-        <span class="error">{{ form.errors.password.0 }}</span><br>
-    {% endif %}
-    <label for="team_colour">Team Colour:</label><br>
-    <select id="team_colour" name="team_colour" required>
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="blue">Blue</option>
-    </select><br><br>
-    <input type="submit" value="Register">
-    </form>
+<body class="bg-light">
+    {% include 'navbar.html' %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center mb-4">Register</h2>
+                {% if error_message %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error_message }}
+                    </div>
+                {% endif %}
+                <form action="{% url 'sustainability:register' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                        {% if form.errors.username %}
+                            <span class="error">{{ form.errors.username.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname">First Name:</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname" required>
+                        {% if form.errors.firstname %}
+                            <span class="error">{{ form.errors.firstname.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name:</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname" required>
+                        {% if form.errors.lastname %}
+                            <span class="error">{{ form.errors.lastname.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth:</label>
+                        <input type="date" class="form-control" id="dob" name="dob" required>
+                        {% if form.errors.dob %}
+                            <span class="error">{{ form.errors.dob.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        {% if form.errors.email %}
+                            <span class="error">{{ form.errors.email.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        {% if form.errors.password %}
+                            <span class="error">{{ form.errors.password.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmpassword">Confirm Password:</label>
+                        <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" required>
+                        {% if form.errors.password %}
+                            <span class="error">{{ form.errors.password.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="team_colour">Team Colour:</label>
+                        <select class="form-control" id="team_colour" name="team_colour" required>
+                            <option value="red">Red</option>
+                            <option value="green">Green</option>
+                            <option value="blue">Blue</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

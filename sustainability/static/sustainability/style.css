@@ -1,43 +1,50 @@
-/*dark blue #264059
- * light blue #6EA0B1
- * orange #E5690B
- * brown #9F5D35 */
+/* Written by Fedor Morgunov */
 
 body {
-    background-color: #f8f9fa;
+           font-family: 'Open Sans', sans-serif;
+           color: #333; /* Dark gray text */
+       }
+       h1, h3 {
+           color: #007bff; /* Blue headings */
+       }
+
+       h2 {
+           color: #fff;
+       }
+
+       p {
+           line-height: 1.6;
+       }
+       .jumbotron {
+           background-color: #90BC92; /* Green jumbotron background */
+           color: #fff; /* White text */
+       }
+       .jumbotron h2 {
+           border-bottom: 2px solid #fff; /* White border under heading */
+       }
+       .row {
+           margin-top: 20px;
+       }
+       .col-md-6 {
+           padding: 0 15px;
+       }
+       .col-md-6 h3 {
+           color: #007bff; /* Red headings */
+       }
+.col-md-6 ul > li > ul li {
+    position: relative; /* Position relative for pseudo-element positioning */
+    padding-left: 20px; /* Add left padding for text */
+    margin-bottom: 10px; /* Add margin between list items */
 }
 
-.container {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+.col-md-6 ul > li > ul li::before {
+    content: ''; /* Empty content for pseudo-element */
+    position: absolute; /* Position absolute for pseudo-element */
+    left: -15px; /* Position from the left */
+    top: 50%; /* Position from the top */
+    transform: translateY(-50%); /* Center vertically */
+    width: 10px; /* Width of the bullet point */
+    height: 10px; /* Height of the bullet point */
+    background-color: #007bff; /* Green color for bullet point */
+    border-radius: 50%; /* Rounded bullet point */
 }
-
-h1, h2 {
-    color: #007bff;
-}
-
-nav {
-    display: flex;
-    justify-content: center;
-    background-color: #007bff; /* Same color as the leaderboard page */
-    padding: 10px 0;
-}
-
-nav button {
-    background-color: #FD767E; /* Same color as the buttons in the leaderboard page */
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    margin: 0 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-nav button:hover {
-    background-color: #FF8C00; /* Orange */
-}
-
-/* Written by Fedor Morgunov and Silvia */

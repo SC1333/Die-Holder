@@ -7,20 +7,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     {% load static %}
 	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
+    
 </head>
 <body onload="getUserLocation()"> <!-- Call the getUserLocation to begin checking if the user is on the streatham campus -->
-    <nav>
-        <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
-        <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
-        <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)">Map</button>
-        </nav>
-    
-        <script>
-            function openUrl(button) {
-                var url = button.getAttribute('data-url');
-                window.location.href = url;
-            }
-        </script>
+   {% include 'navbar.html' %}
     <h1>Welcome to the Redeem Points Page</h1>
     <div id="redemption-message"></div>
     

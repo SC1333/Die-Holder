@@ -11,6 +11,7 @@ class RegisterForm(forms.Form):
     email = forms.EmailField(max_length=254, label='Email')
     team_colour = forms.ChoiceField(choices=[('red', 'Red'), ('green', 'Green'), ('blue', 'Blue')], label='Team Colour')
     password = forms.CharField(widget=forms.PasswordInput(), label='Password')
+    confirmpassword = forms.CharField(widget=forms.PasswordInput(), label='Confirm Password')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

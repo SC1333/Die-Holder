@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from sqlite3 import IntegrityError
 
 import qrcode
@@ -141,7 +142,7 @@ def log_in(request):
                 error_message = "Invalid username or password"
         else:
             # Invalid form data, set error message
-            error_message = "Invalid username or password"
+            error_message = form.error_messages['invalid_login']
     else:
         form = AuthenticationForm()
         error_message = ""
@@ -196,7 +197,21 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-
+            is_username_taken = User.objects.filter(username=form.cleaned_data['username']).exists()
+            is_email_taken = User.objects.filter(email=form.cleaned_data['email']).exists()
+            password_check = form.cleaned_data['password']
+            confirm_password = form.cleaned_data['confirmpassword']
+            dob_check = form.cleaned_data['dob']
+            age_limit = datetime.now() - timedelta(days=16 * 365)  # Calculating 16 years ago
+            if is_username_taken or is_email_taken:
+                error_message = 'Username already taken' if is_username_taken else 'Email already taken'
+                return render(request, 'register.html', {'form': form, 'error_message': error_message})
+            if password_check != confirm_password:
+                error_message = 'Passwords do not match'
+                return render(request, 'register.html', {'form': form, 'error_message': error_message})
+            if datetime.strptime(dob_check,'%Y-%m-%d').date() > age_limit.date():
+                error_message = 'You must be over the age of 16 to consent to using this application'
+                return render(request, 'register.html', {'form': form, 'error_message': error_message})
             # Create a new User instance
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
@@ -400,3 +415,6 @@ class AdminConfirmTwoFactorAuthView(FormView): #defining the logic for the confi
 def check_cookie(request):
     logged_in = '_auth_user_id' in request.session
     return JsonResponse({'logged_in': logged_in})
+
+def privacy(request):
+    return render(request,'privacy.html')

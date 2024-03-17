@@ -15,18 +15,7 @@
     </style>
 </head>
 <body>
- <nav>
-        <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)">Leaderboard</button>
-        <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)">Authentication</button>
-        <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)">Map</button>
-        </nav>
-    	<!-- Navbar -->  
-        <script>
-            function openUrl(button) {
-                var url = button.getAttribute('data-url');
-                window.location.href = url;
-            }
-        </script>
+    {% include 'navbar.html' %}
     <h1>Setup TOTP</h1>
     <img src="{{ qr_code }}" alt="QR Code" class="center">
 </body>

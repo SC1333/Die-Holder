@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from . import Views
 from django.urls import include
@@ -33,4 +35,5 @@ urlpatterns = [
     path('write-to-score-table/', Views.write_to_score_table, name='write-to-score-table'),#used to write to the database score table via a jquery request
     path('setup/', Views.generate_totp_secret, name='setup'),
     path('check-cookie/', Views.check_cookie, name='check_cookie'),
+    path('privacy/', Views.privacy, name='privacy'),
 ]

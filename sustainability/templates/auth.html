@@ -1,21 +1,41 @@
+<!-- Written by Fedor Morgunov -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
+    <link rel="stylesheet" href="{% static 'sustainability/navbar.css' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        .container {
+            max-width: 600px; /* Limit container width for better readability */
+            margin-top: 50px; /* Add some top margin */
+        }
+
+        h2 {
+            color: black;
+            text-align: center; /* Center-align the heading */
+        }
+        
+        .page-buttons .btn {
+            width: 100%; /* Make buttons full-width */
+            margin-bottom: 5px;
+        }
+        
+    </style>
 </head>
 <body>
-    <h2>Welcome!</h2>
-    <p>Please select an option:</p>
-    <div>
-        <a href="{% url 'sustainability:login' %}" class="btn">Login</a>
-    </div>
-    <div>
-        <a href="{% url 'sustainability:register' %}" class="btn">Register</a>
+    {% include 'navbar.html' %}
+    <div class="container">
+        <h2>Welcome!</h2>
+        <p class="lead text-center">Please select an option:</p>
+        <div class="page-buttons"> <!-- Add a parent class -->
+            <a href="{% url 'sustainability:login' %}" class="btn btn-primary">Login</a>
+            <a href="{% url 'sustainability:register' %}" class="btn btn-secondary">Register</a>
+        </div>
     </div>
 </body>
 </html>
