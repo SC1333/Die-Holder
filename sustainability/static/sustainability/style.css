@@ -1,36 +1,36 @@
 /* Written by Fedor Morgunov */
 
 body {
-           font-family: 'Open Sans', sans-serif;
-           color: #333; /* Dark gray text */
-       }
-       h1, h3 {
-           color: #007bff; /* Blue headings */
-       }
+    font-family: 'Open Sans', sans-serif;
+    color: #333; /* Dark gray text */
+}
+h1, h3 {
+    color: #007bff; /* Blue headings */
+}
 
-       h2 {
-           color: #fff;
-       }
+h2 {
+    color: #fff;
+}
 
-       p {
-           line-height: 1.6;
-       }
-       .jumbotron {
-           background-color: #90BC92; /* Green jumbotron background */
-           color: #fff; /* White text */
-       }
-       .jumbotron h2 {
-           border-bottom: 2px solid #fff; /* White border under heading */
-       }
-       .row {
-           margin-top: 20px;
-       }
-       .col-md-6 {
-           padding: 0 15px;
-       }
-       .col-md-6 h3 {
-           color: #007bff; /* Red headings */
-       }
+p {
+    line-height: 1.6;
+}
+.jumbotron {
+    background-color: #90BC92; /* Green jumbotron background */
+    color: #fff; /* White text */
+}
+.jumbotron h2 {
+    border-bottom: 2px solid #fff; /* White border under heading */
+}
+.row {
+    margin-top: 20px;
+}
+.col-md-6 {
+    padding: 0 15px;
+}
+.col-md-6 h3 {
+    color: #007bff; /* Red headings */
+}
 .col-md-6 ul > li > ul li {
     position: relative; /* Position relative for pseudo-element positioning */
     padding-left: 20px; /* Add left padding for text */

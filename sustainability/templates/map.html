@@ -1,144 +1,109 @@
-<!--Code primarily written by Silvia with assisstance from Tim -->
+<!--Code primarily written by Silvia with assistance from Tim -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <title>Campus Locations</title>
-     <!-- Bootstrap CSS -->
-     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-     <link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
-     <link rel="stylesheet" href="{% static 'sustainability/navbar.css' %}">
-    <!--Mapbox Script and CSS-->
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
+    {% include 'head.html' %}
     <style>
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin-bottom: 10px;
-        }
         #map {
-            width:100vw;
-            height:60vh;
+            width: inherit;
+            height: 80vh;
         }
     </style>
 </head>
 <body>
-   {% include 'navbar.html' %}
-    
+{% include 'navbar.html' %}
 
-    <h1>Select Campus Location</h1>
-    <p>Please select a campus location from the list below:</p>
-
-    <!--Drop down form to select a building and to view more infomaiton about it-->
-    <form id="campusForm">  
-        <select id="campusSelect" onchange="showLocation()">
-            <option value="" selected disabled>Select a Location</option>
-            <option value="Harrison">Harrison</option>
-            <option value="Queens">Queens</option>
-            <option value="Forum">Forum</option>
-            <!-- Add more location options as needed -->
-        </select>
-    </form>
-
-    <div id="locationInfo" style="display: none;">
-        <!-- Location information will be displayed here -->
-        <h2>Location Details</h2>
-        <ul>
-            <li><strong>Location:</strong> <span id="locationName"></span></li>
-            <li><strong>Description:</strong> <span id="locationDescription"></span></li>
-            <!-- Add more details about the location as needed -->
-        </ul>
+<div class="container-fluid">
+    <div class="row mb-3 ml-3">
+        <h1>Battle Map</h1>
     </div>
-
-    <script>
-        function showLocation() {
-            var selectedLocation = document.getElementById("campusSelect").value;
-            var locationInfo = document.getElementById("locationInfo");
-            var locationNameSpan = document.getElementById("locationName");
-            var locationDescriptionSpan = document.getElementById("locationDescription");
-
-            // Define details for each location
-            var locationDetails = {
-                "Harrison": {name: "Harrison", description: "One of the main buildings for Engineering based degrees along with computer Science and Mathematics"},
-                "Queens": {name: "Queens", description: "Used for a variety subjects but primarily for english and the arts"},
-                "Forum": {name: "Forum", description: "The hub of Streatham Campus containing coffee shops, SID and the career zone"}
-                // Add more locations and their descriptions as needed
-            };
-
-            if (selectedLocation in locationDetails) {
-                locationNameSpan.textContent = locationDetails[selectedLocation].name;
-                locationDescriptionSpan.textContent = locationDetails[selectedLocation].description;
-                locationInfo.style.display = "block";
-            } else {
-                locationInfo.style.display = "none";
-            }
-        }
-</script>
-
-
-
-<div id="map"></div>
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div id="map"></div>
+        </div>
+        <div class="col-md-5">
+            <div class="row">
+                <div class="col">
+                    <h2>Building Stats</h2>
+                    <form>
+                        <fieldset disabled>
+                            <div class="form-group">
+                                <label for="buildingName">Building Name</label>
+                                <input type="text" class="form-control" id="buildingName" placeholder="Tap a building to get started">
+                            </div>
+                            <div class="form-group">
+                                <label for="controllingTeam">Controlling Team</label>
+                                <input type="text" class="form-control" id="controllingTeam" placeholder="Tap a building to get started">
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h2>Highlights</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     //map of building ID to make code more readable
     const idMap = new Map([
-  ['Harrison', 27314281],
-  ['Laver', 11803404],
-  ['Amory', 27315944],
-  ['INTO', 167907357],
-  ['Physics', 27313808],
-  ['Newman', 27314032],
-  ['Peter chalk', 27314118],
-  ['Geoffrey pope', 27314280],
-  ['Geoffrey pope2', 475846710],
-  ['Queens', 7200443],
-  ['DH', 170941331],
-  ['Henry', 167907365],
-  ['Library', 26683102],
-  ['Hatherly', 26682909],
-  ['Streatham court', 27919393],
-  ['Business school', 136597064],
-  ['Xfi', 27919104],
-  ['SWIOT', 27314451],
-  ['Innovation', 27314497],
-  ['Sports park', 27454614],
-  ['Lemon grove', 27315688],
-  ['Tennis centre', 44647043],
-  ['Northcott theatre', 26683720],
-  ['Northcott house', 26683671],
-  ['Washington singer', 26682543],
-  ['Marketplace', 162102795],
-  ['Great hall', 26683509]
-]);
+        ['Harrison', 27314281],
+        ['Laver', 11803404],
+        ['Amory', 27315944],
+        ['INTO', 167907357],
+        ['Physics', 27313808],
+        ['Newman', 27314032],
+        ['Peter chalk', 27314118],
+        ['Geoffrey pope', 27314280],
+        ['Geoffrey pope2', 475846710],
+        ['Queens', 7200443],
+        ['DH', 170941331],
+        ['Henry', 167907365],
+        ['Library', 26683102],
+        ['Hatherly', 26682909],
+        ['Streatham court', 27919393],
+        ['Business school', 136597064],
+        ['Xfi', 27919104],
+        ['SWIOT', 27314451],
+        ['Innovation', 27314497],
+        ['Sports park', 27454614],
+        ['Lemon grove', 27315688],
+        ['Tennis centre', 44647043],
+        ['Northcott theatre', 26683720],
+        ['Northcott house', 26683671],
+        ['Washington singer', 26682543],
+        ['Marketplace', 162102795],
+        ['Great hall', 26683509]
+    ]);
 
     mapboxgl.accessToken = 'pk.eyJ1IjoiMTg0NDUxai1ueXAiLCJhIjoiY2xzc3Q1cnQ4MTluOTJrcW1zODBmZXh3byJ9.udDssIarSHnvW1rxY6Yc-g';
 
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: [-3.53229913559922,50.73552940649972], 
+        center: [-3.53229913559922,50.73552940649972],
         zoom: 15,
         pitch:10,
     });
 
     //repeated aspects of paint function
     const commonPaint = {
-    'fill-extrusion-height': [
-    'interpolate', ['linear'], ['zoom'],
-    15, 0,
-    15.05, ['get', 'height']
-  ],
-  'fill-extrusion-base': [
-    'interpolate', ['linear'], ['zoom'],
-    15, 0,
-    15.05, ['get', 'min_height']
-  ],
-  'fill-extrusion-opacity': 0.6
-};
+        'fill-extrusion-height': [
+            'interpolate', ['linear'], ['zoom'],
+            15, 0,
+            15.05, ['get', 'height']
+        ],
+        'fill-extrusion-base': [
+            'interpolate', ['linear'], ['zoom'],
+            15, 0,
+            15.05, ['get', 'min_height']
+        ],
+        'fill-extrusion-opacity': 0.6
+    };
 
     map.on('load', () => {
         //basis layer for all 3d buildins that allows abillity to check for building IDs through console
@@ -168,20 +133,20 @@
                 ...commonPaint,
                 'fill-extrusion-color': '#ff0000',
             },
-        //filter that determines which buildings need to be highlighted for this team
-        //Needs to be changed to use part of the database to make more dynamic
-	'filter': ['any', 
-           ['==', ['id'], idMap.get('Harrison')],
-           ['==', ['id'], idMap.get('DH')],
-           ['==', ['id'], idMap.get('Laver')],
-           ['==', ['id'], idMap.get('Amory')],
-           ['==', ['id'], idMap.get('INTO')],
-           ['==', ['id'], idMap.get('Physics')],
-           ['==', ['id'], idMap.get('Marketplace')],
-           ['==', ['id'], idMap.get('Newman')]
+            //filter that determines which buildings need to be highlighted for this team
+            //Needs to be changed to use part of the database to make more dynamic
+            'filter': ['any',
+                ['==', ['id'], idMap.get('Harrison')],
+                ['==', ['id'], idMap.get('DH')],
+                ['==', ['id'], idMap.get('Laver')],
+                ['==', ['id'], idMap.get('Amory')],
+                ['==', ['id'], idMap.get('INTO')],
+                ['==', ['id'], idMap.get('Physics')],
+                ['==', ['id'], idMap.get('Marketplace')],
+                ['==', ['id'], idMap.get('Newman')]
 
-          ]
-});
+            ]
+        });
 
         map.addLayer({
             'id': 'green-buildings',
@@ -194,18 +159,18 @@
                 ...commonPaint,
                 'fill-extrusion-color': '#00ff00',
             },
-	'filter': ['any', 
-        ['==', ['id'], idMap.get('Geoffrey pope')], 
-        ['==', ['id'], idMap.get('Geoffrey pope2')], 
-        ['==', ['id'], idMap.get('Queens')], 
-        ['==', ['id'], idMap.get('Library')],
-        ['==', ['id'], idMap.get('Hatherly')],
-        ['==', ['id'], idMap.get('Streatham court')],
-        ['==', ['id'], idMap.get('Business school')], 
-        ['==', ['id'], idMap.get('Xfi')],
-        ['==', ['id'], idMap.get('Henry')]
-          ]
-});
+            'filter': ['any',
+                ['==', ['id'], idMap.get('Geoffrey pope')],
+                ['==', ['id'], idMap.get('Geoffrey pope2')],
+                ['==', ['id'], idMap.get('Queens')],
+                ['==', ['id'], idMap.get('Library')],
+                ['==', ['id'], idMap.get('Hatherly')],
+                ['==', ['id'], idMap.get('Streatham court')],
+                ['==', ['id'], idMap.get('Business school')],
+                ['==', ['id'], idMap.get('Xfi')],
+                ['==', ['id'], idMap.get('Henry')]
+            ]
+        });
 
         map.addLayer({
             'id': 'blue-buildings',
@@ -218,19 +183,19 @@
                 ...commonPaint,
                 'fill-extrusion-color': '#0000ff',
             },
-	'filter': ['any', 
-        ['==', ['id'], idMap.get('SWIOT')], 
-        ['==', ['id'], idMap.get('Innovation')],
-        ['==', ['id'], idMap.get('Sports park')],
-        ['==', ['id'], idMap.get('Tennis centre')],
-        ['==', ['id'], idMap.get('Northcott theatre')],
-        ['==', ['id'], idMap.get('Northcott house')],
-        ['==', ['id'], idMap.get('Peter chalk')],
-        ['==', ['id'], idMap.get('Lemon grove')],
-        ['==', ['id'], idMap.get('Great hall')],
-        ['==', ['id'], idMap.get('Washington singer')]
-          ]
-});
+            'filter': ['any',
+                ['==', ['id'], idMap.get('SWIOT')],
+                ['==', ['id'], idMap.get('Innovation')],
+                ['==', ['id'], idMap.get('Sports park')],
+                ['==', ['id'], idMap.get('Tennis centre')],
+                ['==', ['id'], idMap.get('Northcott theatre')],
+                ['==', ['id'], idMap.get('Northcott house')],
+                ['==', ['id'], idMap.get('Peter chalk')],
+                ['==', ['id'], idMap.get('Lemon grove')],
+                ['==', ['id'], idMap.get('Great hall')],
+                ['==', ['id'], idMap.get('Washington singer')]
+            ]
+        });
 
         //prints a building ID to console which allows buildings to be added to the map variable listed above
         map.on('click', '3d-buildings', function (e) {
@@ -238,6 +203,7 @@
                 const clickedFeature = e.features[0];
                 const buildingId = clickedFeature.id;
                 console.log("Clicked Building ID:", buildingId);
+                document.getElementById('buildingName').value = idMap.get(buildingId);
             }
         });
     });

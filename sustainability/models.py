@@ -14,7 +14,6 @@ import qrcode
 import qrcode.image.svg
 
 
-
 class Team(models.Model):
     COLORS = {
         'FF0000': 'Red',
@@ -28,12 +27,9 @@ class Team(models.Model):
 class Stronghold(models.Model):
     building_name = models.CharField(max_length=100, unique=True)
     controlling_team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, blank=True)
-
-
-class Coordinate(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
-    stronghold = models.ForeignKey(Stronghold, on_delete=models.CASCADE)
+    mapbox_id = models.IntegerField()
 
 
 class Action(models.Model):
@@ -66,6 +62,7 @@ class AdminTwoFactorAuthData(models.Model): # creating a new model to store admi
     # defining the schema
     otp_secret = models.CharField(max_length=255)
     session_identifier = models.UUIDField(blank=True, null=True)
+
     def generate_qr_code(self, name: Optional[str] = None) -> str: #function to produce the 2fa QR code for authenticator apps
         totp = pyotp.TOTP(self.otp_secret)
         qr_uri = totp.provisioning_uri(
