@@ -43,6 +43,11 @@
     {% if form.errors.password %}
         <span class="error">{{ form.errors.password.0 }}</span><br>
     {% endif %}
+    <label for="confirmpassword">Confirm Password:</label><br>
+    <input type="password" id="confirmpassword" name="confirmpassword" required><br>
+    {% if form.errors.password %}
+        <span class="error">{{ form.errors.password.0 }}</span><br>
+    {% endif %}
     <label for="team_colour">Team Colour:</label><br>
     <select id="team_colour" name="team_colour" required>
         <option value="red">Red</option>
