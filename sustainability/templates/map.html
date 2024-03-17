@@ -26,19 +26,8 @@
     </style>
 </head>
 <body>
-    <nav>
-        <button data-url="{% url 'sustainability:leaderboard' %}" onclick="openUrl(this)" class="btn btn-primary">Leaderboard</button>
-        <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)" class="btn btn-primary">Authentication</button>
-        <button data-url="{% url 'sustainability:map' %}" onclick="openUrl(this)" class="btn btn-primary">Map</button>
-    </nav>
-
+   {% include 'navbar.html' %}
     
-    <script>
-    function openUrl(button) {
-        var url = button.getAttribute('data-url');
-        window.location.href = url;
-    }
-    </script>
 
     <h1>Select Campus Location</h1>
     <p>Please select a campus location from the list below:</p>
