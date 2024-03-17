@@ -1,8 +1,10 @@
+<!-- Written by Fedor Morgunov -->
+
 <!-- Navigation buttons -->
        <nav class="navbar navbar-expand-lg navbar-light bg-light">
    <!-- Brand/logo -->
-   <a class="navbar-brand" href="#">Sustainability App</a>
-  
+<a class="navbar-brand" href="/">Sustainability App</a>
+
    <!-- Toggler/collapsible Button -->
    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
        <span class="navbar-toggler-icon"></span>
@@ -36,6 +38,11 @@
            <button data-url="{% url 'sustainability:auth' %}" onclick="openUrl(this)" class="btn btn-primary ml-auto">Login/Register</button>
        {% endif %}
    </div>
+       
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+       
 </nav>
            <script>
        function openUrl(button) {
