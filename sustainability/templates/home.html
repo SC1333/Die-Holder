@@ -1,68 +1,77 @@
 <!-- Written by Fedor Morgunov -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     {% load static %}
-    {% include 'head.html' %}
-    <style>
-        body {
-            background-image: url({% static 'campus.jpg' %});
-            background-size: cover; /* Cover the entire viewport */
-            background-repeat: no-repeat; /* Do not repeat the image */
-            background-attachment: fixed; /* Fixed background position */
-        }
-    </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Welcome to the Sustainability App</title>
+   <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
+    <link rel="stylesheet" href="{% static 'sustainability/navbar.css' %}">
+       <style>
+       body {
+           background-image: url({% static 'campus.jpg' %});
+           background-size: cover; /* Cover the entire viewport */
+           background-repeat: no-repeat; /* Do not repeat the image */
+           background-attachment: fixed; /* Fixed background position */
+       }
+   </style>
 </head>
 <body>
-{% include 'navbar.html' %}
-<div class="container">
-    <h1>Welcome to the Sustainability App</h1>
-    <p>This is a home page for the Sustainability App.</p>
-    {% if not has_2fa_device %} <!--display a button to allow users to setup 2fa -->
-        <a href="{% url 'sustainability:setup' %}">It looks like you have not yet setup two factor authentication you can do so by clicking here or by visiting the /setup page</a>
-    {% endif %}
-    <div>
-        <a href="{% url 'sustainability:privacy' %}">View our privacy policy here</a>
-    </div>
 
-    <div class="jumbotron">
-        <h2>University of Exeter's Strategy 2030</h2>
-        <p>The University of Exeter’s Strategy 2030 builds on the Environment and Climate Emergency declaration made in 2019 and commits the University to leading meaningful action against the climate emergency and ecological crisis. Reducing our own impact is a large part of this, and we have a target to achieve carbon net zero across all scopes by 2030.</p>
-        <p>Waste and recycling is an area where everyone can make a difference...</p>
-    </div>
-
-
-    <div class="row">
-        <div class="col-md-6">
-            <h3>What are we doing?</h3>
-            <ul>
-                <li>Working group established to investigate the feasibility of creating an off-campus resource hub for improving resource management and enabling reuse and recycling of University waste using the most sustainable methods and promoting circular economy</li>
-                <li>Continued focus on further reduction of single use plastics</li>
-                <li>Enhancing reuse through expansion of the Moving On project</li>
-                <li>Developing regular reuse pop-up events</li>
-                <li>Investigating opportunities for student reuse</li>
-            </ul>
-            <img src="{% static 'Waste_and_recycling.jpeg' %}" alt="Waste and Recycling" style="width: inherit;">
+    {% include 'navbar.html' %}
+    
+   <div class="container">
+       <h1>Welcome to the Sustainability App</h1>
+       <p>This is a home page for the Sustainability App.</p>
+       {% if not has_2fa_device %} <!--display a button to allow users to setup 2fa -->
+       <a href="{% url 'sustainability:setup' %}">It looks like you have not yet setup two factor authentication you can do so by clicking here or by visiting the /setup page</a>
+    {% endif %}  
+        <div>
+            <a href="{% url 'sustainability:privacy' %}">View our privacy policy here</a>
         </div>
-        <div class="col-md-6">
-            <h3>Recycling</h3>
-            <ul>
-                <li>Waste composting - we are working with academics, professionals, industry and manufacturers to investigate the opportunity of introducing in-vessel composting to the South West in order to correctly process compostable packaging.</li>
-                <li>A waste tender process is underway which is identifying opportunities for improved segregation and treatment of our waste from suppliers of five of our existing waste streams:
-                    <ul>
-                        <li>Chemical & lab waste</li>
-                        <li>Clinical waste</li>
-                        <li>WEEE – IT</li>
-                        <li>WEEE – electrical</li>
-                        <li>Paper – confidential & ‘regular’</li>
-                    </ul>
-                </li>
-                <li>Tetrapak recycling scheme introduced</li>
-                <li>We are continuing to focus on further reduction of single-use plastics</li>
-                <li>Our new Waste and Resource strategy is in development, while we undertake extensive consultations with our external and internal stakeholders, together with exploring innovation within waste contract services</li>
-            </ul>
-        </div>
-    </div>
-</div>
+
+       <div class="jumbotron">
+           <h2>University of Exeter's Strategy 2030</h2>
+           <p>The University of Exeter’s Strategy 2030 builds on the Environment and Climate Emergency declaration made in 2019 and commits the University to leading meaningful action against the climate emergency and ecological crisis. Reducing our own impact is a large part of this, and we have a target to achieve carbon net zero across all scopes by 2030.</p>
+           <p>Waste and recycling is an area where everyone can make a difference...</p>
+       </div>
+
+
+       <div class="row">
+           <div class="col-md-6">
+               <h3>What are we doing?</h3>
+               <ul>
+                   <li>Working group established to investigate the feasibility of creating an off-campus resource hub for improving resource management and enabling reuse and recycling of University waste using the most sustainable methods and promoting circular economy</li>
+                   <li>Continued focus on further reduction of single use plastics</li>
+                   <li>Enhancing reuse through expansion of the Moving On project</li>
+                   <li>Developing regular reuse pop-up events</li>
+                   <li>Investigating opportunities for student reuse</li>
+               </ul>
+               <img src="{% static 'Waste_and_recycling.jpeg' %}" alt="Waste and Recycling" style="width: 550px; height: 330px;">
+           </div>
+           <div class="col-md-6">
+               <h3>Recycling</h3>
+               <ul>
+                   <li>Waste composting - we are working with academics, professionals, industry and manufacturers to investigate the opportunity of introducing in-vessel composting to the South West in order to correctly process compostable packaging.</li>
+                   <li>A waste tender process is underway which is identifying opportunities for improved segregation and treatment of our waste from suppliers of five of our existing waste streams:
+                       <ul>
+                           <li>Chemical & lab waste</li>
+                           <li>Clinical waste</li>
+                           <li>WEEE – IT</li>
+                           <li>WEEE – electrical</li>
+                           <li>Paper – confidential & ‘regular’</li>
+                       </ul>
+                   </li>
+                   <li>Tetrapak recycling scheme introduced</li>
+                   <li>We are continuing to focus on further reduction of single-use plastics</li>
+                   <li>Our new Waste and Resource strategy is in development, while we undertake extensive consultations with our external and internal stakeholders, together with exploring innovation within waste contract services</li>
+               </ul>
+           </div>
+       </div>
+           </div>
 </body>
 </html>

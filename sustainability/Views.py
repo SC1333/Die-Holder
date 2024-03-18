@@ -330,7 +330,7 @@ def generate_totp_secret(request):
 
     # Convert image to data URI
     buffer = io.BytesIO()
-    img.save(buffer, format="PNG")
+    img.save(buffer)
     img_str = base64.b64encode(buffer.getvalue()).decode()
 
     data_uri = "data:image/png;base64," + img_str
