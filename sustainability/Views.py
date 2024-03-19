@@ -18,6 +18,7 @@ from collections import defaultdict
 from django_otp.plugins.otp_totp.models import TOTPDevice
 import io
 from django.core.exceptions import ValidationError
+from django.core.serializers import serialize
 from django import forms
 import pyotp
 from django.urls import reverse
@@ -226,10 +227,6 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 
-def map(request):
-    return render(request, 'map.html')
-
-
 """
 The following function are used for the redeem_points page
 The first function redeem_points is used to pass the parameters from the url to the HTML document
@@ -263,7 +260,7 @@ def get_building_and_action_names(request, buildingID, actionID):
 def write_to_score_table(request):
     if request.method == 'POST':
         try:
-            #obtain the values from the post request
+            #  obtain the values from the post request
             userID = request.user.id
             buildingID = request.POST.get('buildingID')
             actionID = request.POST.get('actionID')
@@ -278,15 +275,30 @@ def write_to_score_table(request):
             stronghold = get_object_or_404(Stronghold, pk=buildingID)
             action = get_object_or_404(Action, pk=actionID)
             # Create a new Score object and save it to the database
-            score = Score(user=player, action_site=stronghold, action_done=action, datetime_earned=dateTimeEarned)
+            score = Score(player=player, action_site=stronghold, action_done=action, datetime_earned=dateTimeEarned)
             score.save()
+
+            scores = Score.objects.filter(action_site=stronghold)
+            teams = Team.objects.values_list('team_name', flat=True)
+            teamscores = {}
+            for team in teams:
+                team_scores = scores.filter(player__team__team_name=team)
+                team_points = team_scores.aggregate(Sum('action_done__points_value'))['action_done__points_value__sum']
+                if team_points is None:
+                    team_points = 0
+                teamscores[team] = team_points
+            team_highest = max(teamscores, key=teamscores.get)
+            stronghold.controlling_team = Team.objects.get(team_name=team_highest)
+            stronghold.save()
+
 
             # Retrieve building name, action name, and points value
             building_name = Stronghold.objects.get(id=buildingID).building_name
             action_name = Action.objects.get(id=actionID).action_name
             points_value = Action.objects.get(id=actionID).points_value
 
-            return JsonResponse({#return the parameters so the dynamic html element can display a confirmation message
+            return JsonResponse({
+                # return the parameters so the dynamic html element can display a confirmation message
                 'success': True,
                 'buildingName': building_name,
                 'actionName': action_name,
@@ -416,11 +428,10 @@ def privacy(request):  # generates the privacy policy page
 def map(request):
     # Query all buildings with their controlling teams from the database
     buildings_data = Stronghold.objects.all()
-    buildings_data_json = serialize('json', buildings_data)    
+    buildings_data_json = serialize('json', buildings_data)
+    teams_data = Team.objects.all()
+    teams_data_json = serialize('json',teams_data)
 
-    # Print/debug the data to check its contents
-    print(buildings_data)
-    print(buildings_data_json)
-    
     # Pass the data to the template
-    return render(request, 'map.html', {'buildings_data_json': buildings_data_json})
+    return render(request, 'map.html', {'buildings_data_json': buildings_data_json, 'teams_data_json': teams_data_json})
+

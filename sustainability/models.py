@@ -38,7 +38,7 @@ class Player(models.Model):
     is_2fa_enabled = models.BooleanField(default=False)
 
 class Score(models.Model):
-    user = models.ForeignKey(Player, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     action_site = models.ForeignKey(Stronghold, on_delete=models.CASCADE)
     action_done = models.ForeignKey(Action, on_delete=models.CASCADE)
     datetime_earned = models.DateTimeField()
