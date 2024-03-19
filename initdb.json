@@ -155,7 +155,7 @@
         "model": "sustainability.action",
         "pk": 1,
         "fields": {
-            "action_name": "Action 1",
+            "action_name": "Recycling",
             "points_value": 10
         }
     },
@@ -163,7 +163,7 @@
         "model": "sustainability.action",
         "pk": 2,
         "fields": {
-            "action_name": "Action 2",
+            "action_name": "Turn off light",
             "points_value": 5
         }
     },
