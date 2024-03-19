@@ -48,3 +48,14 @@ p {
     background-color: #007bff; /* Green color for bullet point */
     border-radius: 50%; /* Rounded bullet point */
 }
+
+#redemption-message {
+    color: #009601;
+    text-align: center;
+    background-color: #baffba;
+    padding: 20px;
+    margin: 20px auto;
+    border: 1px solid #003c00;
+    border-radius: 5px;
+    max-width: 500px;
+}
