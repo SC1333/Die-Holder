@@ -247,7 +247,6 @@ The following function are used for the redeem_points page
 The first function redeem_points is used to pass the parameters from the url to the HTML document
 The Second function get_building_and_action_names is used to return the building name and action name from the database based on the url parameters via a jquery request from the javascript code
 The third function write_to_score_table is used to write the user,action and building to the database base by using the url parameters and the users cookie value via a jquery request from the javascript code
-
 Written by Tom Shannon
 
 """
@@ -314,7 +313,11 @@ def write_to_score_table(request):
 
 
 
+""" 
+Written by Thomas Shannon,
+The following functions are used for both user and admin/game keeper two factor authentication
 
+"""
 @login_required
 def generate_totp_secret(request):
     # Generate TOTP secret key
@@ -342,7 +345,7 @@ def generate_totp_secret(request):
     return HttpResponse(html_content)
 
 
-def admin_two_factor_auth_data_create(*, user) -> AdminTwoFactorAuthData: #define the view that generates the otp_secret
+def admin_two_factor_auth_data_create(*, user) -> AdminTwoFactorAuthData:  # define the view that generates the otp_secret
     if hasattr(user, 'two_factor_auth_data'):
         raise ValidationError(
             'Can not have more than one 2FA related data.'
@@ -354,14 +357,14 @@ def admin_two_factor_auth_data_create(*, user) -> AdminTwoFactorAuthData: #defin
     return two_factor_auth_data
 
 
-class AdminSetupTwoFactorAuthView(TemplateView): #defining the logic for the setup 2fa page
+class AdminSetupTwoFactorAuthView(TemplateView):  # defining the logic for the setup 2fa page
     template_name = "custom_admin/setup_2fa.html"
 
     def post(self, request):
         context = {}
         user = request.user
 
-        try:#dynamically update the page when the generate button is pressed to display both the code and the QRcode
+        try:  # dynamically update the page when the generate button is pressed to display both the written code and the QRcode
             two_factor_auth_data = admin_two_factor_auth_data_create(user=user)
             otp_secret = two_factor_auth_data.otp_secret
             print(otp_secret)
@@ -373,11 +376,11 @@ class AdminSetupTwoFactorAuthView(TemplateView): #defining the logic for the set
         return render(request, self.template_name, context)
 
 
-class AdminConfirmTwoFactorAuthView(FormView): #defining the logic for the confirm 2fa page
+class AdminConfirmTwoFactorAuthView(FormView):  # defining the logic for the confirm 2fa page
     template_name = "custom_admin/confirm_2fa.html"
-    success_url = reverse_lazy("admin:index")
+    success_url = reverse_lazy("admin:index")  # The URL to redirect to if a sucessful login occurs
 
-    class Form(forms.Form):
+    class Form(forms.Form): # Form for the 2fa confirm
         otp = forms.CharField(required=True)
 
         def clean_otp(self): #takes the form data and checks to see if the otp matches
@@ -408,13 +411,15 @@ class AdminConfirmTwoFactorAuthView(FormView): #defining the logic for the confi
     def form_valid(self, form): # assigns the 2fa cookie
         form.two_factor_auth_data.rotate_session_identifier()
 
-        self.request.session['2fa_token'] = str(form.two_factor_auth_data.session_identifier)
+        self.request.session['2fa_token'] = str(form.two_factor_auth_data.session_identifier)  # gets the 2fa token session key to ensure the user is properly authorised
 
         return super().form_valid(form)
 
-def check_cookie(request):
+
+def check_cookie(request):  # checks to see if the user has the new cookie
     logged_in = '_auth_user_id' in request.session
     return JsonResponse({'logged_in': logged_in})
 
-def privacy(request):
+
+def privacy(request):  # generates the privacy policy page
     return render(request,'privacy.html')
