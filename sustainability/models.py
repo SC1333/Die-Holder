@@ -13,6 +13,7 @@ import pyotp
 import qrcode
 import qrcode.image.svg
 
+"""Written by Timothy John Low and Thomas Shannon"""
 
 class Team(models.Model):
     COLORS = {
@@ -53,8 +54,8 @@ class Score(models.Model):
     datetime_earned = models.DateTimeField()
 
 
-class AdminTwoFactorAuthData(models.Model): # creating a new model to store admin 2fa
-    user = models.OneToOneField( # defining the parent table
+class AdminTwoFactorAuthData(models.Model):  # creating a new model to store admin 2fa
+    user = models.OneToOneField(  # defining the parent table
         settings.AUTH_USER_MODEL,
         related_name='two_factor_auth_data',
         on_delete=models.CASCADE
@@ -63,9 +64,9 @@ class AdminTwoFactorAuthData(models.Model): # creating a new model to store admi
     otp_secret = models.CharField(max_length=255)
     session_identifier = models.UUIDField(blank=True, null=True)
 
-    def generate_qr_code(self, name: Optional[str] = None) -> str: #function to produce the 2fa QR code for authenticator apps
-        totp = pyotp.TOTP(self.otp_secret)
-        qr_uri = totp.provisioning_uri(
+    def generate_qr_code(self, name: Optional[str] = None) -> str:  # function to produce the 2fa QR code for authenticator apps
+        totp = pyotp.TOTP(self.otp_secret)  # generate the TOTP secret
+        qr_uri = totp.provisioning_uri(  # creating the URI stored in the QR code
             name=name,
             issuer_name='sustainability'
         )
@@ -76,12 +77,12 @@ class AdminTwoFactorAuthData(models.Model): # creating a new model to store admi
         # The result is going to be an HTML <svg> tag
         return qr_code_image.to_string().decode('utf_8')
 
-    def validate_otp(self, otp: str) -> bool: #checks the otp provided
+    def validate_otp(self, otp: str) -> bool: # checks the otp provided
         totp = pyotp.TOTP(self.otp_secret)
 
         return totp.verify(otp)
 
-    def rotate_session_identifier(self): #assigns the 2fa cookie
+    def rotate_session_identifier(self): # assigns the 2fa cookie
         self.session_identifier = uuid.uuid4()
 
         self.save(update_fields=["session_identifier"])
