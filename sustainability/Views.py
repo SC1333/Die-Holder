@@ -62,7 +62,7 @@ def leaderboard(request):
         # Get all actions done by the user
         user_actions = Score.objects.filter(user=user.pk)
         # Aggregate total points for those actions
-        total_points = user_actions.aggregate(total_points=Sum('action_done_points_value'))['total_points'] or 0
+        total_points = user_actions.aggregate(total_points=Sum('action_done__points_value'))['total_points'] or 0
         # Apply user's point multiplier
         total_points *= player.pts_multiplier
         # Add total points to the user's group
