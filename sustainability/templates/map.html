@@ -49,44 +49,46 @@
 </div>
 
 <script>
-    //map of building ID to make code more readable
-    const idMap = new Map([
-        ['Harrison', 27314281],
-        ['Laver', 11803404],
-        ['Amory', 27315944],
-        ['INTO', 167907357],
-        ['Physics', 27313808],
-        ['Newman', 27314032],
-        ['Peter chalk', 27314118],
-        ['Geoffrey pope', 27314280],
-        ['Geoffrey pope2', 475846710],
-        ['Queens', 7200443],
-        ['DH', 170941331],
-        ['Henry', 167907365],
-        ['Library', 26683102],
-        ['Hatherly', 26682909],
-        ['Streatham court', 27919393],
-        ['Business school', 136597064],
-        ['Xfi', 27919104],
-        ['SWIOT', 27314451],
-        ['Innovation', 27314497],
-        ['Sports park', 27454614],
-        ['Lemon grove', 27315688],
-        ['Tennis centre', 44647043],
-        ['Northcott theatre', 26683720],
-        ['Northcott house', 26683671],
-        ['Washington singer', 26682543],
-        ['Marketplace', 162102795],
-        ['Great hall', 26683509]
-    ]);
+
+
+	const buildingsData = JSON.parse('{{ buildings_data_json|escapejs }}');
+	console.log(buildingsData[1].fields);
+	const redBuildings = []
+	const blueBuildings = []
+	const greenBuildings = []
+
+	
+
+	for(let i = 0;i < buildingsData.length;i++){
+		temp = buildingsData[i].fields.controlling_team
+		if(temp=="Team Red"){
+			redBuildings.push(buildingsData[i].fields.mapbox_id);
+		}
+		if(temp=="Team Blue"){
+			blueBuildings.push(buildingsData[i].fields.mapbox_id);
+		}
+		if(temp=="Team Green"){
+			greenBuildings.push(buildingsData[i].fields.mapbox_id);
+		}
+	}
+
+	function generateFilter(buildingIds) {
+    		const filterArray = [];
+    		for (const buildingId of buildingIds) {
+        		filterArray.push(['==', ['id'], buildingId]);
+    		}
+    		return filterArray;
+	}
+		
+
 
     mapboxgl.accessToken = 'pk.eyJ1IjoiMTg0NDUxai1ueXAiLCJhIjoiY2xzc3Q1cnQ4MTluOTJrcW1zODBmZXh3byJ9.udDssIarSHnvW1rxY6Yc-g';
 
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: [-3.53229913559922,50.73552940649972],
-        zoom: 15,
+        center: [-3.53339923539932,50.73652940649972],
+        zoom: 16,
         pitch:10,
     });
 
@@ -133,21 +135,10 @@
                 ...commonPaint,
                 'fill-extrusion-color': '#ff0000',
             },
-            //filter that determines which buildings need to be highlighted for this team
-            //Needs to be changed to use part of the database to make more dynamic
-            'filter': ['any',
-                ['==', ['id'], idMap.get('Harrison')],
-                ['==', ['id'], idMap.get('DH')],
-                ['==', ['id'], idMap.get('Laver')],
-                ['==', ['id'], idMap.get('Amory')],
-                ['==', ['id'], idMap.get('INTO')],
-                ['==', ['id'], idMap.get('Physics')],
-                ['==', ['id'], idMap.get('Marketplace')],
-                ['==', ['id'], idMap.get('Newman')]
-
-            ]
+            'filter': ['any',...generateFilter(redBuildings)]
         });
 
+	    
         map.addLayer({
             'id': 'green-buildings',
             'source': 'composite',
@@ -159,17 +150,7 @@
                 ...commonPaint,
                 'fill-extrusion-color': '#00ff00',
             },
-            'filter': ['any',
-                ['==', ['id'], idMap.get('Geoffrey pope')],
-                ['==', ['id'], idMap.get('Geoffrey pope2')],
-                ['==', ['id'], idMap.get('Queens')],
-                ['==', ['id'], idMap.get('Library')],
-                ['==', ['id'], idMap.get('Hatherly')],
-                ['==', ['id'], idMap.get('Streatham court')],
-                ['==', ['id'], idMap.get('Business school')],
-                ['==', ['id'], idMap.get('Xfi')],
-                ['==', ['id'], idMap.get('Henry')]
-            ]
+	'filter': ['any',...generateFilter(greenBuildings)]
         });
 
         map.addLayer({
@@ -183,18 +164,7 @@
                 ...commonPaint,
                 'fill-extrusion-color': '#0000ff',
             },
-            'filter': ['any',
-                ['==', ['id'], idMap.get('SWIOT')],
-                ['==', ['id'], idMap.get('Innovation')],
-                ['==', ['id'], idMap.get('Sports park')],
-                ['==', ['id'], idMap.get('Tennis centre')],
-                ['==', ['id'], idMap.get('Northcott theatre')],
-                ['==', ['id'], idMap.get('Northcott house')],
-                ['==', ['id'], idMap.get('Peter chalk')],
-                ['==', ['id'], idMap.get('Lemon grove')],
-                ['==', ['id'], idMap.get('Great hall')],
-                ['==', ['id'], idMap.get('Washington singer')]
-            ]
+		'filter': ['any',...generateFilter(blueBuildings)]
         });
 
         //prints a building ID to console which allows buildings to be added to the map variable listed above
@@ -203,7 +173,6 @@
                 const clickedFeature = e.features[0];
                 const buildingId = clickedFeature.id;
                 console.log("Clicked Building ID:", buildingId);
-                document.getElementById('buildingName').value = idMap.get(buildingId);
             }
         });
     });
