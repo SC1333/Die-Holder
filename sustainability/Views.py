@@ -411,3 +411,16 @@ def check_cookie(request):  # checks to see if the user has the new cookie
 
 def privacy(request):  # generates the privacy policy page
     return render(request,'privacy.html')
+
+
+def map(request):
+    # Query all buildings with their controlling teams from the database
+    buildings_data = Stronghold.objects.all()
+    buildings_data_json = serialize('json', buildings_data)    
+
+    # Print/debug the data to check its contents
+    print(buildings_data)
+    print(buildings_data_json)
+    
+    # Pass the data to the template
+    return render(request, 'map.html', {'buildings_data_json': buildings_data_json})
