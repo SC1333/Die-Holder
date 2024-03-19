@@ -3,17 +3,17 @@
 <html>
 <head>
     <title>Redeem Points</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     {% load static %}
 	<link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
+    
     
 </head>
 <body onload="getUserLocation()"> <!-- Call the getUserLocation to begin checking if the user is on the streatham campus -->
    {% include 'navbar.html' %}
     <h1>Welcome to the Redeem Points Page</h1>
     <div id="redemption-message"></div>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         // Get the buildingID and actionID from the URL
         function getUserLocation() {// Get the user's location
@@ -53,9 +53,6 @@
                 case error.TIMEOUT:
                     alert("The request to get user location timed out.");
                     break;
-                case error.UNKNOWN_ERROR:
-                    alert("An unknown error occurred.");
-                    break;
             }
         }
 
@@ -72,7 +69,7 @@
                     //send request to DB to retrieve the actions points and the building points and then add the points to the user and the teams building ranking
                     console.log(buildingID);
                     console.log(actionID);
-                    $.ajax({
+                    jQuery.ajax({
                         url: `/get-building-and-action-names/${buildingID}/${actionID}/`,
                         type: 'GET',
                         success: function (response) {
@@ -81,7 +78,7 @@
                             var dateTimeEarned = new Date().toISOString();
                             var csrftoken = getCookie('csrftoken'); //token used to authorise database write query
                             // AJAX request to write to the score table
-                            $.ajax({
+                            jQuery.ajax({
                                 url: '/write-to-score-table/',
                                 type: 'POST',
                                 headers: {
