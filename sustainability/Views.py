@@ -1,12 +1,6 @@
 from datetime import datetime, timedelta
-from sqlite3 import IntegrityError
-
-import qrcode
-import logging
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -14,11 +8,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
 from django_otp import devices_for_user
-from django_otp.decorators import otp_required
-from django_otp.views import LoginView
 import qrcode
 from django.http import HttpResponse
-from django_otp.plugins.otp_totp.models import TOTPDevice
 from .forms import RegisterForm
 from .models import Stronghold, Action, Team, Score, Player
 from django.contrib.auth.forms import AuthenticationForm
@@ -26,14 +17,11 @@ from django.db.models import Sum
 from collections import defaultdict
 from django_otp.plugins.otp_totp.models import TOTPDevice
 import io
-from django.db import models
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django import forms
 import pyotp
 from django.urls import reverse
 from .models import AdminTwoFactorAuthData
-import secrets
 import base64
 
 
@@ -74,7 +62,7 @@ def leaderboard(request):
         # Get all actions done by the user
         user_actions = Score.objects.filter(user=user.pk)
         # Aggregate total points for those actions
-        total_points = user_actions.aggregate(total_points=Sum('action_done__points_value'))['total_points'] or 0
+        total_points = user_actions.aggregate(total_points=Sum('action_done_points_value'))['total_points'] or 0
         # Apply user's point multiplier
         total_points *= player.pts_multiplier
         # Add total points to the user's group

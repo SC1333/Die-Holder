@@ -1,14 +1,10 @@
-from django.conf import settings
-from django.conf.urls.static import static
 from django.urls import path
 from . import Views
-from django.urls import include
 from django.contrib.auth.models import User
 from django_otp.admin import OTPAdminSite
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
 from .Views import custom_logout
-
 
 class OTPAdmin(OTPAdminSite):
     pass
