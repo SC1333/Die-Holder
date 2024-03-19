@@ -1,13 +1,13 @@
 from django.shortcuts import redirect
 from django.urls import path, reverse
 from django.contrib import admin
-from django.contrib.auth import REDIRECT_FIELD_NAME, authenticate
+from django.contrib.auth import authenticate
 
 from sustainability.Views import AdminSetupTwoFactorAuthView, AdminConfirmTwoFactorAuthView
 from sustainability.models import AdminTwoFactorAuthData
 from django.contrib.auth import login as auth_login
 
-"""Written by Thomas Shannon"""
+
 class AdminSite(admin.AdminSite):  # defining the new admin site
     def get_urls(self):
         base_urlpatterns = super().get_urls()  # bringing in the default urls from the admin pageadmin
@@ -27,13 +27,16 @@ class AdminSite(admin.AdminSite):  # defining the new admin site
 
         return extra_urlpatterns + base_urlpatterns
 
-    def login(self, request, *args, **kwargs):  # overriding the login function to include the 2fa code
+
+
+    def login(self, request, *args, **kwargs):
         if request.method != 'POST':
-            return super().login(request, *args, **kwargs)  # returns the default admin login screen
+            return super().login(request, *args, **kwargs)
 
         username = request.POST.get('username')
 
-        user = authenticate(request, username=username, password=request.POST.get('password'))  # checks the username and password from the form
+        user = authenticate(request, username=username, password=request.POST.get('password'))
+
         if user is not None:
             auth_login(request, user)  # Perform the login using Django's built-in function
 
@@ -46,18 +49,17 @@ class AdminSite(admin.AdminSite):  # defining the new admin site
                 return redirect('admin:setup-2fa')  # Redirect to 2FA setup page if no 2FA data
 
         return super().login(request, *args, **kwargs)
-
     def has_permission(self, request): # overriding the permissions function
         has_perm = super().has_permission(request)
 
         if not has_perm:
             return has_perm
 
-        two_factor_auth_data = AdminTwoFactorAuthData.objects.filter( # checking for the user to see if they have 2fa
+        two_factor_auth_data = AdminTwoFactorAuthData.objects.filter( # checking for the user
             user=request.user
         ).first()
 
-        allowed_paths = [  # defining the allowed paths
+        allowed_paths = [
             reverse("admin:confirm-2fa"),
             reverse("admin:setup-2fa")
         ]
@@ -66,7 +68,7 @@ class AdminSite(admin.AdminSite):  # defining the new admin site
             return True
 
         if two_factor_auth_data is not None:
-            two_factor_auth_token = request.session.get("2fa_token")  # ensure the user has the 2fa token before allowing access
+            two_factor_auth_token = request.session.get("2fa_token") # ensure the user has the 2fa token before allowing access
 
             return str(two_factor_auth_data.session_identifier) == two_factor_auth_token
 
