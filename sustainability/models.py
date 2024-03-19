@@ -1,14 +1,8 @@
-import io
 import uuid
-
-from django.db import models
 from django.contrib.auth.models import User
-from django.conf import settings
 from typing import Optional
-
 from django.db import models
 from django.conf import settings
-
 import pyotp
 import qrcode
 import qrcode.image.svg
@@ -24,7 +18,6 @@ class Team(models.Model):
     team_name = models.CharField(max_length=100, primary_key=True)
     team_color = models.CharField(max_length=6, choices=COLORS)
 
-
 class Stronghold(models.Model):
     building_name = models.CharField(max_length=100, unique=True)
     controlling_team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, blank=True)
@@ -32,11 +25,9 @@ class Stronghold(models.Model):
     longitude = models.FloatField()
     mapbox_id = models.IntegerField()
 
-
 class Action(models.Model):
     action_name = models.CharField(max_length=100)
     points_value = models.IntegerField()
-
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -45,7 +36,6 @@ class Player(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     pts_multiplier = models.FloatField(default=1.0)
     is_2fa_enabled = models.BooleanField(default=False)
-
 
 class Score(models.Model):
     user = models.ForeignKey(Player, on_delete=models.CASCADE)
