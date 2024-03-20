@@ -9,11 +9,9 @@ import qrcode.image.svg
 
 """Written by Timothy John Low and Thomas Shannon"""
 
-
 class Team(models.Model):
     team_name = models.CharField(max_length=100, primary_key=True)
     team_color = models.CharField(max_length=6)
-
 
 class Stronghold(models.Model):
     building_name = models.CharField(max_length=100, unique=True)
@@ -22,11 +20,9 @@ class Stronghold(models.Model):
     longitude = models.FloatField()
     mapbox_id = models.IntegerField()
 
-
 class Action(models.Model):
     action_name = models.CharField(max_length=100)
     points_value = models.IntegerField()
-
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -35,7 +31,6 @@ class Player(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     pts_multiplier = models.FloatField(default=1.0)
     is_2fa_enabled = models.BooleanField(default=False)
-
 
 class Score(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
@@ -67,12 +62,12 @@ class AdminTwoFactorAuthData(models.Model):  # creating a new model to store adm
         # The result is going to be an HTML <svg> tag
         return qr_code_image.to_string().decode('utf_8')
 
-    def validate_otp(self, otp: str) -> bool:  # checks the otp provided
+    def validate_otp(self, otp: str) -> bool: # checks the otp provided
         totp = pyotp.TOTP(self.otp_secret)
 
         return totp.verify(otp)
 
-    def rotate_session_identifier(self):  # assigns the 2fa cookie
+    def rotate_session_identifier(self): # assigns the 2fa cookie
         self.session_identifier = uuid.uuid4()
 
         self.save(update_fields=["session_identifier"])
