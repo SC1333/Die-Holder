@@ -10,13 +10,8 @@ import qrcode.image.svg
 """Written by Timothy John Low and Thomas Shannon"""
 
 class Team(models.Model):
-    COLORS = {
-        'FF0000': 'Red',
-        '0000FF': 'Blue',
-        '00FF00': 'Green'
-    }
     team_name = models.CharField(max_length=100, primary_key=True)
-    team_color = models.CharField(max_length=6, choices=COLORS)
+    team_color = models.CharField(max_length=6)
 
 class Stronghold(models.Model):
     building_name = models.CharField(max_length=100, unique=True)
@@ -38,7 +33,7 @@ class Player(models.Model):
     is_2fa_enabled = models.BooleanField(default=False)
 
 class Score(models.Model):
-    user = models.ForeignKey(Player, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     action_site = models.ForeignKey(Stronghold, on_delete=models.CASCADE)
     action_done = models.ForeignKey(Action, on_delete=models.CASCADE)
     datetime_earned = models.DateTimeField()

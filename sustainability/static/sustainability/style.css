@@ -4,12 +4,8 @@ body {
     font-family: 'Open Sans', sans-serif;
     color: #333; /* Dark gray text */
 }
-h1, h3 {
+h1, h2, h3 {
     color: #007bff; /* Blue headings */
-}
-
-h2 {
-    color: #fff;
 }
 
 p {
@@ -21,6 +17,7 @@ p {
 }
 .jumbotron h2 {
     border-bottom: 2px solid #fff; /* White border under heading */
+    color: #fff; /* White heading */
 }
 .row {
     margin-top: 20px;

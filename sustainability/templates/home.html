@@ -4,21 +4,15 @@
 <html lang="en">
 <head>
     {% load static %}
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Welcome to the Sustainability App</title>
-   <!-- Bootstrap CSS -->
-   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'sustainability/style.css' %}">
-    <link rel="stylesheet" href="{% static 'sustainability/navbar.css' %}">
-       <style>
-       body {
-           background-image: url({% static 'campus.jpg' %});
-           background-size: cover; /* Cover the entire viewport */
-           background-repeat: no-repeat; /* Do not repeat the image */
-           background-attachment: fixed; /* Fixed background position */
-       }
-   </style>
+    {% include 'head.html' %}
+    <style>
+        body {
+            background-image: url({% static 'campus.jpg' %});
+            background-size: cover; /* Cover the entire viewport */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-attachment: fixed; /* Fixed background position */
+        }
+    </style>
 </head>
 <body>
 

@@ -1,182 +1,1 @@
-<!--Code primarily written by Silvia with assistance from Tim -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% include 'head.html' %}
-    <style>
-        #map {
-            width: inherit;
-            height: 80vh;
-        }
-    </style>
-</head>
-<body>
-{% include 'navbar.html' %}
-
-<div class="container-fluid">
-    <div class="row mb-3 ml-3">
-        <h1>Battle Map</h1>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-md-7">
-            <div id="map"></div>
-        </div>
-        <div class="col-md-5">
-            <div class="row">
-                <div class="col">
-                    <h2>Building Stats</h2>
-                    <form>
-                        <fieldset disabled>
-                            <div class="form-group">
-                                <label for="buildingName">Building Name</label>
-                                <input type="text" class="form-control" id="buildingName" placeholder="Tap a building to get started">
-                            </div>
-                            <div class="form-group">
-                                <label for="controllingTeam">Controlling Team</label>
-                                <input type="text" class="form-control" id="controllingTeam" placeholder="Tap a building to get started">
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <h2>Highlights</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-
-
-	const buildingsData = JSON.parse('{{ buildings_data_json|escapejs }}');
-	console.log(buildingsData[1].fields);
-	const redBuildings = []
-	const blueBuildings = []
-	const greenBuildings = []
-
-	
-
-	for(let i = 0;i < buildingsData.length;i++){
-		temp = buildingsData[i].fields.controlling_team
-		if(temp=="Team Red"){
-			redBuildings.push(buildingsData[i].fields.mapbox_id);
-		}
-		if(temp=="Team Blue"){
-			blueBuildings.push(buildingsData[i].fields.mapbox_id);
-		}
-		if(temp=="Team Green"){
-			greenBuildings.push(buildingsData[i].fields.mapbox_id);
-		}
-	}
-
-	function generateFilter(buildingIds) {
-    		const filterArray = [];
-    		for (const buildingId of buildingIds) {
-        		filterArray.push(['==', ['id'], buildingId]);
-    		}
-    		return filterArray;
-	}
-		
-
-
-    mapboxgl.accessToken = 'pk.eyJ1IjoiMTg0NDUxai1ueXAiLCJhIjoiY2xzc3Q1cnQ4MTluOTJrcW1zODBmZXh3byJ9.udDssIarSHnvW1rxY6Yc-g';
-
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [-3.53339923539932,50.73652940649972],
-        zoom: 16,
-        pitch:10,
-    });
-
-    //repeated aspects of paint function
-    const commonPaint = {
-        'fill-extrusion-height': [
-            'interpolate', ['linear'], ['zoom'],
-            15, 0,
-            15.05, ['get', 'height']
-        ],
-        'fill-extrusion-base': [
-            'interpolate', ['linear'], ['zoom'],
-            15, 0,
-            15.05, ['get', 'min_height']
-        ],
-        'fill-extrusion-opacity': 0.6
-    };
-
-    map.on('load', () => {
-        //basis layer for all 3d buildins that allows abillity to check for building IDs through console
-        //Also gives detail for actual buildings which can be added visually
-        map.addLayer({
-            'id': '3d-buildings',
-            'source': 'composite',
-            'source-layer': 'building',
-            'filter': ['==', 'extrude', 'true'],
-            'type': 'fill-extrusion',
-            'minzoom': 15,
-            'paint': {
-                ...commonPaint,
-                'fill-extrusion-color': '#aaa',
-            },
-        });
-
-        //Highlights specified buildings into respective colours as show in ID
-        map.addLayer({
-            'id': 'red-buildings',
-            'source': 'composite',
-            'source-layer': 'building',
-            'filter': ['==', 'extrude', 'true'],
-            'type': 'fill-extrusion',
-            'minzoom': 15,
-            'paint': {
-                ...commonPaint,
-                'fill-extrusion-color': '#ff0000',
-            },
-            'filter': ['any',...generateFilter(redBuildings)]
-        });
-
-	    
-        map.addLayer({
-            'id': 'green-buildings',
-            'source': 'composite',
-            'source-layer': 'building',
-            'filter': ['==', 'extrude', 'true'],
-            'type': 'fill-extrusion',
-            'minzoom': 15,
-            'paint': {
-                ...commonPaint,
-                'fill-extrusion-color': '#00ff00',
-            },
-	'filter': ['any',...generateFilter(greenBuildings)]
-        });
-
-        map.addLayer({
-            'id': 'blue-buildings',
-            'source': 'composite',
-            'source-layer': 'building',
-            'filter': ['==', 'extrude', 'true'],
-            'type': 'fill-extrusion',
-            'minzoom': 15,
-            'paint': {
-                ...commonPaint,
-                'fill-extrusion-color': '#0000ff',
-            },
-		'filter': ['any',...generateFilter(blueBuildings)]
-        });
-
-        //prints a building ID to console which allows buildings to be added to the map variable listed above
-        map.on('click', '3d-buildings', function (e) {
-            if (e.features.length > 0) {
-                const clickedFeature = e.features[0];
-                const buildingId = clickedFeature.id;
-                console.log("Clicked Building ID:", buildingId);
-            }
-        });
-    });
-</script>
-
-</body>
-</html>
+<!--Code primarily written by Silvia with assistance from Tim --><!DOCTYPE html><html lang="en"><head>    {% include 'head.html' %}    <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>    <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">    <style>        #map {            width: inherit;            height: 80vh;        }    </style></head><body>{% include 'navbar.html' %}<div class="container-fluid">    <div class="row mb-3 ml-3">        <h1>Battle Map</h1>    </div>    <div class="row justify-content-center">        <div class="col-md-7">            <div id="map"></div>        </div>        <div class="col-md-5">            <div class="row">                <div class="col">                    <h2>Building Stats</h2>                    <form>                        <fieldset disabled>                            <div class="form-group">                                <label for="buildingName">Building Name</label>                                <input type="text" class="form-control" id="buildingName" placeholder="Tap a building to get started">                            </div>                            <div class="form-group">                                <label for="controllingTeam">Controlling Team</label>                                <input type="text" class="form-control" id="controllingTeam" placeholder="Tap a building to get started">                            </div>                        </fieldset>                    </form>                </div>            </div>            <div class="row">                <div class="col">                    <h2>Highlights</h2>                </div>            </div>        </div>    </div></div><script>    mapboxgl.accessToken = 'pk.eyJ1IjoiMTg0NDUxai1ueXAiLCJhIjoiY2xzc3Q1cnQ4MTluOTJrcW1zODBmZXh3byJ9.udDssIarSHnvW1rxY6Yc-g';    const buildingsData = JSON.parse('{{ buildings_data_json|escapejs }}');    const teamsData = JSON.parse('{{ teams_data_json|escapejs }}');    let teamBuildings = {};    // Check if teamsData is defined and not empty    if (teamsData && teamsData.length > 0) {        // Iterate over teamsData and initialize an empty array for each team ID        teamsData.forEach(team => {            teamBuildings[team.pk] = [];        });    } else {        console.error('teamsData is not defined or empty.');    }    buildingsData.forEach(building => {        const temp = building.fields.controlling_team;        if (temp != null) {            teamBuildings[temp].push(building.fields.mapbox_id);        }    });    function generateFilter(buildingIds) {        const filterArray = [];        buildingIds.forEach(buildingId => {            filterArray.push(['==', ['id'], buildingId]);        });        return filterArray;    }        const map = new mapboxgl.Map({        container: 'map',        style: 'mapbox://styles/mapbox/streets-v11',        center: [-3.53339923539932, 50.73652940649972],        zoom: 16,        pitch: 10,    });    // Repeated aspects of paint function    const commonPaint = {        'fill-extrusion-height': [            'interpolate', ['linear'], ['zoom'],            15, 0,            15.05, ['get', 'height']        ],        'fill-extrusion-base': [            'interpolate', ['linear'], ['zoom'],            15, 0,            15.05, ['get', 'min_height']        ],        'fill-extrusion-opacity': 0.6    };    map.on('load', () => {        map.addLayer({            'id': '3d-buildings',            'source': 'composite',            'source-layer': 'building',            'filter': ['==', 'extrude', 'true'],            'type': 'fill-extrusion',            'minzoom': 15,            'paint': {                ...commonPaint,                'fill-extrusion-color': '#aaa',            },        });        teamsData.forEach(team => {            const layerId = `team-${team.pk}-buildings`;            console.log(team.fields.team_color);            map.addLayer({                'id': layerId,                'source': 'composite',                'source-layer': 'building',                'filter': ['==', 'extrude', 'true'],                'type': 'fill-extrusion',                'minzoom': 15,                'paint': {                    ...commonPaint,                    'fill-extrusion-color': '#' + team.fields.team_color,                },                'filter': ['any', ...generateFilter(teamBuildings[team.pk])]            });        });        map.on('click', '3d-buildings', function (e) {            if (e.features.length > 0) {                const clickedFeature = e.features[0];                const buildingId = clickedFeature.id;                console.log("Clicked Building ID:", buildingId);                const clicked_building_data = buildingsData.filter(building => building.fields.mapbox_id === buildingId)[0];                const clicked_controlling_team = buildingsData.filter(building => building.fields.mapbox_id === buildingId)[0];                if (clicked_building_data && clicked_controlling_team) {                    document.querySelector('#buildingName').value = clicked_building_data.fields.building_name;                    document.querySelector('#controllingTeam').value = clicked_controlling_team.fields.controlling_team;                }                else {                    document.querySelector('#buildingName').value = "Ask your game master to add this building";                    document.querySelector('#controllingTeam').value = "";                }            }        });    });</script></body></html>
