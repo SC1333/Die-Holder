@@ -207,7 +207,7 @@
         "model": "sustainability.score",
         "pk": 1,
         "fields": {
-            "user": 1,
+            "player": 1,
             "action_site": 2,
             "action_done": 1,
             "datetime_earned": "2023-12-31T08:00:00Z"
@@ -217,7 +217,7 @@
         "model": "sustainability.score",
         "pk": 2,
         "fields": {
-            "user": 2,
+            "player": 2,
             "action_site": 1,
             "action_done": 2,
             "datetime_earned": "2023-12-31T08:30:00Z"
@@ -227,7 +227,7 @@
         "model": "sustainability.score",
         "pk": 3,
         "fields": {
-            "user": 3,
+            "player": 3,
             "action_site": 3,
             "action_done": 1,
             "datetime_earned": "2023-12-31T09:00:00Z"
