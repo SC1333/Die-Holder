@@ -30,10 +30,23 @@
                     <li>Add a new account.</li>
                     <li>Scan the QR code below.</li>
                 </ol>
-                <img src="{{ qr_code }}" alt="QR Code" class="img-fluid center mb-3">
-                <p class="text-muted">Scan this QR code with your authenticator app.</p>
             </div>
         </div>
+        <div class="row justify-content-around">
+            <div class="col">
+                <img src="{{ qr_code }}" alt="QR Code" class="img-fluid center mb-3">
+                <p class="text-muted center">Scan this QR code with your authenticator app.</p>
+            </div>
+            <div class="col">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="code">Enter the 6-digit code from your authenticator app:</label>
+                        <input type="text" id="verify_token" name="verify_token" class="form-control" maxlength="6" required>
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                    </div>
+                </form>
+            </div>
     </div>
 </body>
 </html>
