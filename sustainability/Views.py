@@ -33,7 +33,7 @@ import base64
 def home(request):
     if request.user.is_authenticated:
         user = request.user
-        has_2fa_device = TOTPDevice.objects.filter(user=user).exists()
+        has_2fa_device = TOTPDevice.objects.filter(user=user, confirmed=1).exists()
     else:
         has_2fa_device = False
 
@@ -90,6 +90,8 @@ Written by Fedor Morgunov
 
 
 def auth(request):
+    if request.user.is_authenticated:
+        return redirect('/')
     return render(request, 'auth.html')
 
 """
@@ -319,29 +321,41 @@ The following functions are used for both user and admin/game keeper two factor 
 """
 @login_required
 def generate_totp_secret(request):
+    if TOTPDevice.objects.filter(user=request.user, confirmed=1).exists():
+        return redirect('/')
+    elif request.method == 'POST':
+        totp_device = TOTPDevice.objects.filter(user=request.user, confirmed=0).first()
+        if totp_device.verify_token(request.POST['verify_token']):
+            totp_device.confirmed = 1
+            totp_device.save()
+            return redirect('/')
+        else:
+            return redirect('/setup')
     # Generate TOTP secret key
-    user = request.user
-    totp_device = TOTPDevice.objects.create(user=user)
-    totp_secret = totp_device.config_url
+    else:
+        if TOTPDevice.objects.filter(user=request.user, confirmed=0).exists():
+            totp_device = TOTPDevice.objects.get(user=request.user, confirmed=0)
+        else:
+            totp_device = TOTPDevice.objects.create(user=request.user, confirmed=0)
+        totp_secret = totp_device.config_url
 
-    # Generate QR code
-    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-    qr.add_data(totp_secret)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
+        # Generate QR code
+        qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+        qr.add_data(totp_secret)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
 
-    # Convert image to data URI
-    buffer = io.BytesIO()
-    img.save(buffer)
-    img_str = base64.b64encode(buffer.getvalue()).decode()
+        # Convert image to data URI
+        buffer = io.BytesIO()
+        img.save(buffer)
+        img_str = base64.b64encode(buffer.getvalue()).decode()
 
-    data_uri = "data:image/png;base64," + img_str
+        data_uri = "data:image/png;base64," + img_str
 
-    # Render the template with QR code data URI
-    context = {"qr_code": data_uri}
-    html_content = render_to_string("setup.html", context)
+        # Render the template with QR code data URI
+        context = {"qr_code": data_uri}
 
-    return HttpResponse(html_content)
+        return render(request, "setup.html", context)
 
 
 def admin_two_factor_auth_data_create(*, user) -> AdminTwoFactorAuthData:  # define the view that generates the otp_secret
