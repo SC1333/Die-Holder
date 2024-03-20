@@ -65,7 +65,7 @@ def leaderboard(request):
         # Aggregate total points for those actions
         total_points = user_actions.aggregate(total_points=Sum('action_done__points_value'))['total_points'] or 0
         # Apply user's point multiplier
-        total_points *= player.pts_multiplier
+        # total_points *= player.pts_multiplier
         # Add total points to the user's group
         group_points[player.team.team_name] += total_points
         # Store individual user points
@@ -429,7 +429,7 @@ def map(request):
     buildings_data = Stronghold.objects.all()
     buildings_data_json = serialize('json', buildings_data)
     teams_data = Team.objects.all()
-    teams_data_json = serialize('json',teams_data)
+    teams_data_json = serialize('json', teams_data)
 
     # Pass the data to the template
     return render(request, 'map.html', {'buildings_data_json': buildings_data_json, 'teams_data_json': teams_data_json})
