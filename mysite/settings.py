@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-!ywuh&)1@ipfa*q0bt0vq7+f-0kob@9@^5y=%avtxce7%_(_=q"
 CSRF_COOKIE_SECURE = True
-CSRF_TRUSTED_ORIGINS = ['https://loaded-die.azurewebsites.net/']
+CSRF_TRUSTED_ORIGINS = ['https://loaded-die.azurewebsites.net']
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
