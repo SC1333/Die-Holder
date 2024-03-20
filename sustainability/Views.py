@@ -209,10 +209,8 @@ def register(request):
                 email=form.cleaned_data['email'],
                 password=form.cleaned_data['password']
             )
-            # Reverse map the selected team color to the corresponding color code
-            team_color_code = next(code for code, color in Team.COLORS.items() if color.lower() == form.cleaned_data['team_colour'])
             # Get the Team object based on the color code
-            team = Team.objects.get(team_color=team_color_code)
+            team = Team.objects.get(team_name=form.cleaned_data['team_name'])
             # Create a new Player instance associated with the User and Team
             player = Player.objects.create(
                 user=user,
@@ -223,8 +221,9 @@ def register(request):
 
     else:
         form = RegisterForm()
+        teams = Team.objects.values_list('team_name', flat=True)
         form.errors.clear()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, 'teams': teams})
 
 
 """

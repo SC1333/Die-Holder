@@ -9,7 +9,7 @@ class RegisterForm(forms.Form):
     lastname = forms.CharField(max_length=100, label='Last Name')
     dob = forms.CharField(max_length=100, label='Date of Birth')
     email = forms.EmailField(max_length=254, label='Email')
-    team_colour = forms.ChoiceField(choices=[('red', 'Red'), ('green', 'Green'), ('blue', 'Blue')], label='Team Colour')
+    team_name = forms.CharField(max_length=100, label='Team Name')
     password = forms.CharField(widget=forms.PasswordInput(), label='Password')
     confirmpassword = forms.CharField(widget=forms.PasswordInput(), label='Confirm Password')
 

@@ -10,13 +10,8 @@ import qrcode.image.svg
 """Written by Timothy John Low and Thomas Shannon"""
 
 class Team(models.Model):
-    COLORS = {
-        'FF0000': 'Red',
-        '0000FF': 'Blue',
-        '00FF00': 'Green'
-    }
     team_name = models.CharField(max_length=100, primary_key=True)
-    team_color = models.CharField(max_length=6, choices=COLORS)
+    team_color = models.CharField(max_length=6)
 
 class Stronghold(models.Model):
     building_name = models.CharField(max_length=100, unique=True)
