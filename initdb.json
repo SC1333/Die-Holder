@@ -1,236 +1,358 @@
 [
-    {
-        "model": "auth.user",
-        "pk": 1,
-        "fields": {
-            "password": "pbkdf2_sha256$720000$298VKT7327VnNMNUqXNqTp$61teDvGIMTzuMmdTtUivOWKxfWQDSUiCNDjZuKSuIN8=",
-            "last_login": null,
-            "is_superuser": false,
-            "username": "user1",
-            "first_name": "First",
-            "last_name": "User",
-            "email": "user1@test.net",
-            "is_staff": false,
-            "is_active": true,
-            "date_joined": "2024-02-26T17:55:04.390Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth.user",
-        "pk": 2,
-        "fields": {
-            "password": "pbkdf2_sha256$720000$b0ucs8WOXphORc7SVcG4O6$cc2sV/cAxBjmbHeAKLObMEcvAnC5wASnBZtjPtaEjBM=",
-            "last_login": null,
-            "is_superuser": false,
-            "username": "user2",
-            "first_name": "Second",
-            "last_name": "User",
-            "email": "user2@test.net",
-            "is_staff": false,
-            "is_active": true,
-            "date_joined": "2024-02-26T17:55:32.070Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth.user",
-        "pk": 3,
-        "fields": {
-            "password": "pbkdf2_sha256$720000$M9pJOc8SyuZUHakgBc9xNX$sWUY4tMIN/7Cazs7Iua9sHolqDM861nBEr/Z5YJ+DU0=",
-            "last_login": null,
-            "is_superuser": false,
-            "username": "user3",
-            "first_name": "Third",
-            "last_name": "User",
-            "email": "user3@test.net",
-            "is_staff": false,
-            "is_active": true,
-            "date_joined": "2024-02-26T17:55:46.083Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "sustainability.team",
-        "pk": "Team Blue",
-        "fields": {
-            "team_color": "0000FF"
-        }
-    },
-    {
-        "model": "sustainability.team",
-        "pk": "Team Green",
-        "fields": {
-            "team_color": "00FF00"
-        }
-    },
-    {
-        "model": "sustainability.team",
-        "pk": "Team Red",
-        "fields": {
-            "team_color": "FF0000"
-        }
-    },
-    {
-        "model": "sustainability.stronghold",
-        "pk": 1,
-        "fields": {
-            "building_name": "Harrison Building",
-            "controlling_team": null,
-            "latitude": 50.73768582419938,
-            "longitude": -3.5326147103811087,
-            "mapbox_id": 27314281
-        }
-    },
-    {
-        "model": "sustainability.stronghold",
-        "pk": 2,
-        "fields": {
-            "building_name": "Physics Building",
-            "controlling_team": "Team Red",
-            "latitude": 50.73719078524443,
-            "longitude": -3.5360081923890427,
-            "mapbox_id": 27313808
-        }
-    },
-    {
-        "model": "sustainability.stronghold",
-        "pk": 3,
-        "fields": {
-            "building_name": "Amory Building",
-            "controlling_team": "Team Blue",
-            "latitude": 50.73660692728706,
-            "longitude": -3.5316735001931354,
-            "mapbox_id": 27315944
-        }
-    },
-    {
-        "model": "sustainability.stronghold",
-        "pk": 4,
-        "fields": {
-            "building_name": "INTO Building",
-            "controlling_team": "Team Green",
-            "latitude": 50.73611750852338,
-            "longitude": -3.533731654691712,
-            "mapbox_id": 167907357
-        }
-    },
-    {
-        "model": "sustainability.stronghold",
-        "pk": 5,
-        "fields": {
-            "building_name": "Laver Building",
-            "controlling_team": "Team Red",
-            "latitude": 50.73745911093643,
-            "longitude": -3.533505865641906,
-            "mapbox_id": 11803404
-        }
-    },
-    {
-        "model": "sustainability.stronghold",
-        "pk": 6,
-        "fields": {
-            "building_name": "Newman Building",
-            "controlling_team": "Team Blue",
-            "latitude": 50.7365357208194,
-            "longitude": -3.535906990896615,
-            "mapbox_id": 27314032
-        }
-    },
-    {
-        "model": "sustainability.stronghold",
-        "pk": 7,
-        "fields": {
-            "building_name": "Peter Chalk Center",
-            "controlling_team": "Team Green",
-            "latitude": 50.73623598095898,
-            "longitude": -3.536107791336508,
-            "mapbox_id": 27314118
-        }
-    },
-    {
-        "model": "sustainability.action",
-        "pk": 1,
-        "fields": {
-            "action_name": "Recycling",
-            "points_value": 10
-        }
-    },
-    {
-        "model": "sustainability.action",
-        "pk": 2,
-        "fields": {
-            "action_name": "Turn off light",
-            "points_value": 5
-        }
-    },
-    {
-        "model": "sustainability.player",
-        "pk": 1,
-        "fields": {
-            "user": 1,
-            "birthdate": "1990-01-01T00:00:00Z",
-            "role": "player",
-            "team": "Team Red",
-            "pts_multiplier": 1.0,
-            "is_2fa_enabled": false
-        }
-    },
-    {
-        "model": "sustainability.player",
-        "pk": 2,
-        "fields": {
-            "user": 2,
-            "birthdate": "1990-01-01T00:00:00Z",
-            "role": "player",
-            "team": "Team Green",
-            "pts_multiplier": 1.0,
-            "is_2fa_enabled": false
-        }
-    },
-    {
-        "model": "sustainability.player",
-        "pk": 3,
-        "fields": {
-            "user": 3,
-            "birthdate": "1990-01-01T00:00:00Z",
-            "role": "player",
-            "team": "Team Blue",
-            "pts_multiplier": 1.5,
-            "is_2fa_enabled": false
-        }
-    },
-    {
-        "model": "sustainability.score",
-        "pk": 1,
-        "fields": {
-            "player": 1,
-            "action_site": 2,
-            "action_done": 1,
-            "datetime_earned": "2023-12-31T08:00:00Z"
-        }
-    },
-    {
-        "model": "sustainability.score",
-        "pk": 2,
-        "fields": {
-            "player": 2,
-            "action_site": 1,
-            "action_done": 2,
-            "datetime_earned": "2023-12-31T08:30:00Z"
-        }
-    },
-    {
-        "model": "sustainability.score",
-        "pk": 3,
-        "fields": {
-            "player": 3,
-            "action_site": 3,
-            "action_done": 1,
-            "datetime_earned": "2023-12-31T09:00:00Z"
-        }
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$298VKT7327VnNMNUqXNqTp$61teDvGIMTzuMmdTtUivOWKxfWQDSUiCNDjZuKSuIN8=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "user1",
+        "first_name": "First",
+        "last_name": "User",
+        "email": "user1@test.net",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-02-26T17:55:04.390Z",
+        "groups": [],
+        "user_permissions": []
     }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$b0ucs8WOXphORc7SVcG4O6$cc2sV/cAxBjmbHeAKLObMEcvAnC5wASnBZtjPtaEjBM=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "user2",
+        "first_name": "Second",
+        "last_name": "User",
+        "email": "user2@test.net",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-02-26T17:55:32.070Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$M9pJOc8SyuZUHakgBc9xNX$sWUY4tMIN/7Cazs7Iua9sHolqDM861nBEr/Z5YJ+DU0=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "user3",
+        "first_name": "Third",
+        "last_name": "User",
+        "email": "user3@test.net",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-02-26T17:55:46.083Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "sustainability.team",
+    "pk": "Air Nomads",
+    "fields": {
+        "team_color": "d3ad62"
+    }
+},
+{
+    "model": "sustainability.team",
+    "pk": "Earth Kingdom",
+    "fields": {
+        "team_color": "5f652e"
+    }
+},
+{
+    "model": "sustainability.team",
+    "pk": "Fire Nation",
+    "fields": {
+        "team_color": "c34b34"
+    }
+},
+{
+    "model": "sustainability.team",
+    "pk": "Water Tribe",
+    "fields": {
+        "team_color": "79a0c1"
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 1,
+    "fields": {
+        "building_name": "Harrison Building",
+        "controlling_team": "Air Nomads",
+        "latitude": 50.73768582419938,
+        "longitude": -3.5326147103811087,
+        "mapbox_id": 27314281
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 2,
+    "fields": {
+        "building_name": "Physics Building",
+        "controlling_team": "Fire Nation",
+        "latitude": 50.73719078524443,
+        "longitude": -3.5360081923890427,
+        "mapbox_id": 27313808
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 3,
+    "fields": {
+        "building_name": "Amory Building",
+        "controlling_team": "Water Tribe",
+        "latitude": 50.73660692728706,
+        "longitude": -3.5316735001931354,
+        "mapbox_id": 27315944
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 4,
+    "fields": {
+        "building_name": "INTO Building",
+        "controlling_team": "Earth Kingdom",
+        "latitude": 50.73611750852338,
+        "longitude": -3.533731654691712,
+        "mapbox_id": 167907357
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 5,
+    "fields": {
+        "building_name": "Laver Building",
+        "controlling_team": "Fire Nation",
+        "latitude": 50.73745911093643,
+        "longitude": -3.533505865641906,
+        "mapbox_id": 11803404
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 6,
+    "fields": {
+        "building_name": "Newman Building",
+        "controlling_team": "Water Tribe",
+        "latitude": 50.7365357208194,
+        "longitude": -3.535906990896615,
+        "mapbox_id": 27314032
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 7,
+    "fields": {
+        "building_name": "Peter Chalk Center",
+        "controlling_team": "Earth Kingdom",
+        "latitude": 50.73623598095898,
+        "longitude": -3.536107791336508,
+        "mapbox_id": 27314118
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 8,
+    "fields": {
+        "building_name": "Innovation Center",
+        "controlling_team": null,
+        "latitude": 50.73836149650706,
+        "longitude": -3.531142148372077,
+        "mapbox_id": 27314497
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 9,
+    "fields": {
+        "building_name": "SWIOT",
+        "controlling_team": null,
+        "latitude": 50.73811233463945,
+        "longitude": -3.5306034380964246,
+        "mapbox_id": 27314451
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 10,
+    "fields": {
+        "building_name": "Streatham Court",
+        "controlling_team": null,
+        "latitude": 50.73571711380514,
+        "longitude": -3.5309373364590395,
+        "mapbox_id": 27919393
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 11,
+    "fields": {
+        "building_name": "Building: One",
+        "controlling_team": null,
+        "latitude": 50.73569013993602,
+        "longitude": -3.5299100440084294,
+        "mapbox_id": 136597064
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 12,
+    "fields": {
+        "building_name": "Cornwall House",
+        "controlling_team": null,
+        "latitude": 50.73500128526769,
+        "longitude": -3.529691416855349,
+        "mapbox_id": 27315688
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 13,
+    "fields": {
+        "building_name": "Forum",
+        "controlling_team": null,
+        "latitude": 50.73535423398588,
+        "longitude": -3.533752176479822,
+        "mapbox_id": 162102795
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 14,
+    "fields": {
+        "building_name": "Library",
+        "controlling_team": null,
+        "latitude": 50.73544202441036,
+        "longitude": -3.5332007165531194,
+        "mapbox_id": 26683102
+    }
+},
+{
+    "model": "sustainability.stronghold",
+    "pk": 15,
+    "fields": {
+        "building_name": "Queens Building",
+        "controlling_team": null,
+        "latitude": 50.734189156770704,
+        "longitude": -3.5350409836944228,
+        "mapbox_id": 7200443
+    }
+},
+{
+    "model": "sustainability.action",
+    "pk": 1,
+    "fields": {
+        "action_name": "Recycling",
+        "points_value": 4
+    }
+},
+{
+    "model": "sustainability.action",
+    "pk": 2,
+    "fields": {
+        "action_name": "Turn off light",
+        "points_value": 5
+    }
+},
+{
+    "model": "sustainability.action",
+    "pk": 3,
+    "fields": {
+        "action_name": "Cycle to/from campus",
+        "points_value": 10
+    }
+},
+{
+    "model": "sustainability.action",
+    "pk": 4,
+    "fields": {
+        "action_name": "Take public transport to/from campus",
+        "points_value": 6
+    }
+},
+{
+    "model": "sustainability.action",
+    "pk": 5,
+    "fields": {
+        "action_name": "Refill reusable water bottle",
+        "points_value": 4
+    }
+},
+{
+    "model": "sustainability.player",
+    "pk": 1,
+    "fields": {
+        "user": [
+            "user1"
+        ],
+        "birthdate": "1990-01-01T00:00:00Z",
+        "role": "player",
+        "team": "Fire Nation",
+        "pts_multiplier": 1.0,
+        "is_2fa_enabled": false
+    }
+},
+{
+    "model": "sustainability.player",
+    "pk": 2,
+    "fields": {
+        "user": [
+            "user2"
+        ],
+        "birthdate": "1990-01-01T00:00:00Z",
+        "role": "player",
+        "team": "Earth Kingdom",
+        "pts_multiplier": 1.0,
+        "is_2fa_enabled": false
+    }
+},
+{
+    "model": "sustainability.player",
+    "pk": 3,
+    "fields": {
+        "user": [
+            "user3"
+        ],
+        "birthdate": "1990-01-01T00:00:00Z",
+        "role": "player",
+        "team": "Water Tribe",
+        "pts_multiplier": 1.5,
+        "is_2fa_enabled": false
+    }
+},
+{
+    "model": "sustainability.score",
+    "pk": 1,
+    "fields": {
+        "player": 1,
+        "action_site": 2,
+        "action_done": 1,
+        "datetime_earned": "2023-12-31T08:00:00Z"
+    }
+},
+{
+    "model": "sustainability.score",
+    "pk": 2,
+    "fields": {
+        "player": 2,
+        "action_site": 1,
+        "action_done": 2,
+        "datetime_earned": "2023-12-31T08:30:00Z"
+    }
+},
+{
+    "model": "sustainability.score",
+    "pk": 3,
+    "fields": {
+        "player": 3,
+        "action_site": 3,
+        "action_done": 1,
+        "datetime_earned": "2023-12-31T09:00:00Z"
+    }
+}
 ]

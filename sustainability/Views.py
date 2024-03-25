@@ -4,12 +4,10 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
 from django_otp import devices_for_user
 import qrcode
-from django.http import HttpResponse
 from .forms import RegisterForm
 from .models import Stronghold, Action, Team, Score, Player
 from django.contrib.auth.forms import AuthenticationForm
@@ -95,7 +93,7 @@ def auth(request):
     return render(request, 'auth.html')
 
 """
- This function andles user login authentication.
+ This function handles user login authentication.
 
     Parameters:
     - request: HttpRequest object containing requesting the login user information
@@ -445,6 +443,19 @@ def map(request):
     teams_data = Team.objects.all()
     teams_data_json = serialize('json', teams_data)
 
-    # Pass the data to the template
-    return render(request, 'map.html', {'buildings_data_json': buildings_data_json, 'teams_data_json': teams_data_json})
+    # Get the last 5 scores earned
+    scores_data = Score.objects.all().order_by('-datetime_earned')[:5]
+    highlights = []
+    for score in scores_data:
+        highlights.append({
+            'user': score.player.user,
+            'action': score.action_done.action_name,
+            'building': score.action_site.building_name,
+        })
 
+    # Pass the data to the template
+    return render(request, 'map.html', {
+        'buildings_data_json': buildings_data_json,
+        'teams_data_json': teams_data_json,
+        'highlights': highlights,
+    })
