@@ -1,0 +1,1 @@
+The redeem points via QR code requires you to be on the university of exeter campus to prevent users from abusing the redemption system to earn more points. Therefore this page if being marked may not be able to show full functionality without the marker being at the university of exeter. 
